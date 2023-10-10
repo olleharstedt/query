@@ -279,13 +279,14 @@ function parseJson(array $json)
 {
     echo "Parse json\n";
     $fac = new Factory();
-    foreach ($json['items'] as $item) {
+    foreach ($json['items'] as $i => $item) {
         echo "Process item\n";
         $href = $item['link'];
         //echo $href . PHP_EOL;
         $t = $fac->make($href);
         $t->show();
         echo PHP_EOL;
+        echo "(You're viewing result {$i + 1})\n";
         echo "(Click q to quit)\n";
         readline_callback_handler_install("", function () { echo "here\n"; });
         readline_callback_read_char();
