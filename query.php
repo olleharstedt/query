@@ -57,7 +57,7 @@ class Stackoverflow extends Base
             echo "POSTCELL\n";
             echo $crawler->filter("div.postcell")->text() . PHP_EOL;
             echo "ANSWERCELLS\n";
-            echo $crawler->filter("div.answercell")->text() . PHP_EOL;
+            echo json_encode($crawler->filter("div.answercell")->text()) . PHP_EOL;
 
             //$dom = new DOMDocument();
             //@$dom->loadHTML($content);
