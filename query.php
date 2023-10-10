@@ -142,6 +142,12 @@ class Factory
 {
     public function make($href)
     {
+        if (str_ends_with($href, '.pdf')) {
+            echo "Skipping PDF\n";
+            return new Silent($href);
+        }
+        $key = get_domain($href);
+        /*
         $parts = explode("=", $href);
         if (count($parts) === 1) {
             $parts = explode("/", $href);
@@ -156,6 +162,7 @@ class Factory
             "support.google.com" => Silent::class,
             "stackoverflow.com" => Stackoverflow::class,
         ];
+         */
         if (isset($map[$key])) {
             return new $map[$key]($href);
         } else {
@@ -235,6 +242,7 @@ function parseHtml($content)
             // Close the stream.
             //fclose($stdin);
 
+            echo "(Click q to quit)\n";
             readline_callback_handler_install("", function () { echo "here\n"; });
             readline_callback_read_char();
             $c = readline_info('line_buffer');
@@ -257,6 +265,7 @@ function parseJson(array $json)
         $t = $fac->make($href);
         $t->show();
         echo PHP_EOL;
+        echo "(Click q to quit)\n";
         readline_callback_handler_install("", function () { echo "here\n"; });
         readline_callback_read_char();
         $c = readline_info('line_buffer');
@@ -264,6 +273,18 @@ function parseJson(array $json)
             exit;
         }
     }
+}
+
+
+// @see https://stackoverflow.com/questions/16027102/get-domain-name-from-full-url
+function get_domain($url)
+{
+    $pieces = parse_url($url);
+    $domain = isset($pieces['host']) ? $pieces['host'] : $pieces['path'];
+    if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+        return $regs['domain'];
+    }
+    return false;
 }
 
 /**
