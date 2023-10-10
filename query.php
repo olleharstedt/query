@@ -63,7 +63,8 @@ class Stackoverflow extends Base
             echo "POSTCELL\n";
             echo $crawler->filter("div.postcell")->text() . PHP_EOL;
             echo "ANSWERCELLS\n";
-            echo $crawler->filter("div.answercell")->text(true) . PHP_EOL;
+            $rawText = $crawler->filter("div.answercell")->text('', false);
+            echo trim(preg_replace('/^\s*$/m', ' ', $rawText));
 
             //$dom = new DOMDocument();
             //@$dom->loadHTML($content);
