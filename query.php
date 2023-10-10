@@ -35,6 +35,13 @@ class Base
             foreach($ps as $p) {
                 echo trim($p->textContent) . PHP_EOL;
             }
+            $articles = $dom->getElementsByTagName("article");
+            foreach($articles as $article) {
+                echo trim($article->textContent) . PHP_EOL;
+            }
+            $crawler = new Crawler($content);
+            $rawText = $crawler->filter("article")->text('', false);
+            echo trim($rawText) . PHP_EOL;
         }
         echo "DONE\n";
     }
@@ -61,10 +68,11 @@ class Stackoverflow extends Base
             echo "Got content\n";
             $crawler = new Crawler($content);
             echo "POSTCELL\n";
-            echo $crawler->filter("div.postcell")->text() . PHP_EOL;
+            $rawText = $crawler->filter("div.postcell")->text('', false);
+            echo trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
             echo "ANSWERCELLS\n";
             $rawText = $crawler->filter("div.answercell")->text('', false);
-            echo trim(preg_replace('/^\s*$/m', ' ', $rawText));
+            echo trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
 
             //$dom = new DOMDocument();
             //@$dom->loadHTML($content);
@@ -147,6 +155,7 @@ class Factory
             return new Silent($href);
         }
         $key = get_domain($href);
+        echo "key = $key\n";
         /*
         $parts = explode("=", $href);
         if (count($parts) === 1) {
@@ -156,13 +165,13 @@ class Factory
             $parts = explode("/", $parts[1]);
             $key = $parts[2] ?? '';
         }
+         */
         $map = [
             "www.quora.com" => Query::class,
             "www.youtube.com" => YouTube::class,
             "support.google.com" => Silent::class,
             "stackoverflow.com" => Stackoverflow::class,
         ];
-         */
         if (isset($map[$key])) {
             return new $map[$key]($href);
         } else {
