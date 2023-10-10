@@ -57,7 +57,7 @@ class Stackoverflow extends Base
             echo "POSTCELL\n";
             echo $crawler->filter("div.postcell")->text() . PHP_EOL;
             echo "ANSWERCELLS\n";
-            echo json_encode($crawler->filter("div.answercell")->text()) . PHP_EOL;
+            echo $crawler->filter("div.answercell")->value() . PHP_EOL;
 
             //$dom = new DOMDocument();
             //@$dom->loadHTML($content);
@@ -157,7 +157,19 @@ for ($i = 1; $i < count($argv); $i++) {
 }
 //echo $query . PHP_EOL;
 $query = urlencode($query);
-$content = file_get_contents("https://google.com/search?q=$query");
+
+$useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13';
+$ch = curl_init("");
+curl_setopt($ch, CURLOPT_URL, "https://google.com/search?q=$query");
+curl_setopt($ch, CURLOPT_USERAGENT, $useragent); // set user agent
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+$content = curl_exec($ch);
+var_dump(curl_error($ch));
+curl_close($ch);
+echo $content;
+
+//$content = file_get_contents("https://google.com/search?q=$query");
 $dom = new DOMDocument();
 @$dom->loadHTML($content);
 $fac = new Factory();
