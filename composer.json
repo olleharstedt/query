@@ -4,6 +4,7 @@
         "dbrekelmans/bdi": "^1.1"
     },
     "require": {
-        "symfony/css-selector": "^6.3"
+        "symfony/css-selector": "^6.3",
+        "symfony/dom-crawler": "^6.3"
     }
 }
