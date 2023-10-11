@@ -200,28 +200,9 @@ for ($i = 1; $i < count($argv); $i++) {
 $query = urlencode($query);
 
 //https://www.googleapis.com/customsearch/v1?[parameters]
-$useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13';
-$ch = curl_init("");
-$params = [
-    'key' => $config['key'],
-    'cx'  => $config['cx'],
-    'q'   => $query
-];
+parseJson(getJsonFromApi($query, $config));
+parseHtml(getGoogleFromQuery($query));
 
-$url = "https://www.googleapis.com/customsearch/v1?" . http_build_query($params);
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_USERAGENT, $useragent); // set user agent
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-$content = curl_exec($ch);
-//var_dump(curl_error($ch));
-curl_close($ch);
-if ($content) {
-    $result = json_decode($content, true);
-    parseJson($result);
-}
-
-//$content = file_get_contents("https://google.com/search?q=$query");
 function parseHtml($content)
 {
     $dom = new DOMDocument();
@@ -303,6 +284,35 @@ function parseJson(array $json)
     }
 }
 
+function getGoogleFromQuery(string $query)
+{
+    return file_get_contents("https://google.com/search?q=$query");
+}
+
+function getJsonFromApi(string $query, $config): array
+{
+    $useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13';
+    $ch = curl_init("");
+    $params = [
+        'key' => $config['key'],
+        'cx'  => $config['cx'],
+        'q'   => $query
+    ];
+
+    $url = "https://www.googleapis.com/customsearch/v1?" . http_build_query($params);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_USERAGENT, $useragent); // set user agent
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    $content = curl_exec($ch);
+    $error = curl_error($ch);
+    curl_close($ch);
+    if ($content ) {
+        return json_decode($content, true);
+    } else {
+        throw new Exception($error);
+    }
+}
 
 // @see https://stackoverflow.com/questions/16027102/get-domain-name-from-full-url
 function get_domain($url)
