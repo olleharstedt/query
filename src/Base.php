@@ -25,15 +25,17 @@ class Base
 
             $articles = $dom->getElementsByTagName("article");
             $converter = new HtmlConverter(['strip_tags' => true]);
-            foreach($articles as $article) {
-                $tmpDom = new DOMDocument();
-                $root = $tmpDom->createElement('html');
-                $root = $tmpDom->appendChild($root);
-                $root->appendChild($tmpDom->importNode($article, true));
-                $markdown = $converter->convert($tmpDom->saveHTML());
-                echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
-                // TODO: Only show first article
-                return;
+            if ($articles) {
+                foreach($articles as $article) {
+                    $tmpDom = new DOMDocument();
+                    $root = $tmpDom->createElement('html');
+                    $root = $tmpDom->appendChild($root);
+                    $root->appendChild($tmpDom->importNode($article, true));
+                    $markdown = $converter->convert($tmpDom->saveHTML());
+                    echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
+                    // TODO: Only show first article
+                    return;
+                }
             }
 
             $h1s = $dom->getElementsByTagName("h1");
@@ -48,11 +50,13 @@ class Base
             //$crawler = new Crawler($content);
             //$rawText = $crawler->filter("article")->text('', false);
             //echo trim($rawText) . PHP_EOL;
+        } else {
+            printf("Got content %s\n", json_encode($content));
         }
         echo "DONE\n";
     }
 
-    protected function getLink()
+    public function getLink()
     {
         $parts = explode("=", $this->href);
         if (count($parts) === 1) {

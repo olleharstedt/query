@@ -10,7 +10,12 @@ class Factory
             echo "Skipping PDF\n";
             return new Silent($href);
         }
-        $key = get_domain($href);
+        if (strpos($href, "/url?q") !== false) {
+            $parts = explode("=", $href);
+            $key = get_domain($parts[1]);
+        } else {
+            $key = get_domain($href);
+        }
         echo "key = " . json_encode($key);
         /*
         $parts = explode("=", $href);

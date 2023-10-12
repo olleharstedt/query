@@ -28,7 +28,7 @@ function parseHtml($content)
     $dom = new DOMDocument();
     @$dom->loadHTML($content);
     $fac = new Factory();
-    foreach ($dom->getElementsByTagName("a") as $a) {
+    foreach ($dom->getElementsByTagName("a") as $i => $a) {
         $j = $i + 1;
         if ($a->textContent) {
             $href = $a->getAttribute("href");
@@ -65,18 +65,24 @@ function parseHtml($content)
             // Close the stream.
             //fclose($stdin);
 
-            echo "(You're viewing result {$j})\n";
-            echo "(Click q to quit, space to continue)\n";
             back:
+            echo "(You're viewing result {$j})\n";
+            echo "(Click q to quit, w to dump with w3m, space to continue)\n";
             readline_callback_handler_install("", function () { echo "here\n"; });
             readline_callback_read_char();
             $c = readline_info('line_buffer');
-            if ($c === "q") {
-                exit;
-            } elseif ($c === " ") {
-                continue;
-            } else {
-                goto back;
+            switch ($c) {
+                case "q":
+                    exit;
+                case " ":
+                    continue;
+                case "w":
+                    $link = $t->getLink();
+                    system("w3m $link | cat");
+                    goto back;
+                    break;
+                default:
+                    goto back;
             }
         }
     }

@@ -11,7 +11,7 @@ class KeyTest extends TestCase
     public function testKey()
     {
         $f = new Factory();
-        $res = $f->make("https://stackoverflow.com/questions/57199457/psr-for-class-names-and-filenames-of-similar-classes");
+        $res = $f->make("/url?q=https://stackoverflow.com/rotmos&sa=U&ved=2ahUKEwi04--39PCBAxWhcfEDHdukDCoQFnoECAEQBA&usg=AOvVaw1-CR3wteujT38AIxfp5IFq");
         $this->assertEquals(get_class($res), "Query\Stackoverflow");
     }
 }
