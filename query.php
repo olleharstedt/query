@@ -244,12 +244,18 @@ function parseHtml($content)
             // Close the stream.
             //fclose($stdin);
 
-            echo "(Click q to quit)\n";
+            echo "(You're viewing result {$j})\n";
+            echo "(Click q to quit, space to continue)\n";
+            back:
             readline_callback_handler_install("", function () { echo "here\n"; });
             readline_callback_read_char();
             $c = readline_info('line_buffer');
             if ($c === "q") {
                 exit;
+            } elseif ($c === " ") {
+                continue;
+            } else {
+                goto back;
             }
         }
     }
