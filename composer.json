@@ -1,11 +1,16 @@
 {
+    "platform": {
+        "php": "7.2"
+    },
     "require-dev": {
-        "symfony/panther": "^2.1",
-        "dbrekelmans/bdi": "^1.1"
+        "phpunit/phpunit": "^8.5"
     },
     "require": {
-        "symfony/css-selector": "^6.3",
-        "symfony/dom-crawler": "^6.3",
         "league/html-to-markdown": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Query\\": "src/"
+        }
     }
 }
