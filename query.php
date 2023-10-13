@@ -55,7 +55,7 @@ function parseHtml($content, $opt)
             $buffer .= $t->show();
         }
     }
-    echo substr($buffer, 0, (int) ($opt['c'] ?? 1000));
+    echo substr($buffer, 0, (int) ($opt['c'] ?? 2000));
     echo PHP_EOL;
 }
 

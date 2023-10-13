@@ -24,4 +24,10 @@ class Reddit extends Base
         $buffer .= $this->getTextFromNode($commentArea);
         return $buffer;
     }
+
+    public function getLink()
+    {
+        $href = parent::getLink();
+        return str_replace('www.reddit.com', 'old.reddit.com', $href);
+    }
 }
