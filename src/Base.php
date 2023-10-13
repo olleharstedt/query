@@ -11,7 +11,7 @@ class Base
     protected $href;
     public function __construct($href)
     {
-        echo "Making " . static::class . "\n";
+        //echo "Making " . static::class . "\n";
         $this->href = $href;
     }
 
@@ -81,7 +81,7 @@ class Base
     public function getDom()
     {
         $link = $this->getLink();
-        echo "Fetching $link...\n";
+        error_log("Fetching $link...");
         $content = file_get_contents($link);
         $dom = new DOMDocument();
         @$dom->loadHTML($content);

@@ -22,7 +22,8 @@ for ($i = 1; $i < count($argv); $i++) {
 //echo $query . PHP_EOL;
 $query = urlencode($query);
 
-$opt = getopt("n::");
+$opt = getopt("n::c::");
+printf("query = %s\n", $query);
 
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
@@ -35,70 +36,27 @@ function parseHtml($content, $opt)
     $fac = new Factory();
     $as = $dom->getElementsByTagName("a");
     $buffer = "";
+    $k = 0;
     //foreach (array_slice($as, 0, (int) $opt['n'] ?? 10) as $i => $a) {
     foreach ($as as $i => $a) {
-        if ($i > (int) ($opt['n'] ?? 10)) {
+        //error_log("loop $i");
+        if ($k >= (int) ($opt['n'] ?? 10)) {
             break;
         }
         $j = $i + 1;
         if ($a->textContent) {
             $href = $a->getAttribute("href");
+            //printf("<a> content = %s, href = %s\n", $a->textContent, $href);
             if (strpos($href, "url") !== 1) {
                 continue;
             }
-            //echo $href . PHP_EOL;
+            $k++;
             $t = $fac->make($href);
             $buffer .= $t->show();
-            //echo $a->textContent . PHP_EOL;
-            $parent = $a->parentNode;
-            //$sibling = $parent->nextSibling;
-            //echo PHP_EOL;
-            //echo $parent->textContent . PHP_EOL;
-            $sibling = $a->nextSibling;
-            if ($sibling) {
-                //echo $sibling->textContent . PHP_EOL;
-            }
-            //echo $href . PHP_EOL;
-            //if (strpos($href
-
-
-            //$answer = fgets(STDIN);
-
-            //$handle = fopen ("php://stdin","r");
-            //$line = fgets($handle);
-            //fclose($handle);
-
-            // Get the standard input stream.
-            //$stdin = fopen("php://stdin", "r");
-            // Read a single character from the stream.
-            //$keystroke = fread($stdin, 1);
-            // Close the stream.
-            //fclose($stdin);
-
-            /*
-            back:
-            echo "(You're viewing result {$j})\n";
-            echo "(Click q to quit, w to dump with w3m, space to continue)\n";
-            readline_callback_handler_install("", function () { echo "here\n"; });
-            readline_callback_read_char();
-            $c = readline_info('line_buffer');
-            switch ($c) {
-                case "q":
-                    //exit;
-                case " ":
-                    continue 2;
-                case "w":
-                    $link = $t->getLink();
-                    system("w3m $link | cat");
-                    goto back;
-                    break;
-                default:
-                    goto back;
-            }
-             */
         }
     }
-    echo substr($buffer, 0, 1000);
+    echo substr($buffer, 0, (int) ($opt['c'] ?? 1000));
+    echo PHP_EOL;
 }
 
 // $json coming from google api

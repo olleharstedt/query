@@ -7,7 +7,7 @@ class Factory
     public function make($href)
     {
         if (ends_with($href, '.pdf')) {
-            echo "Skipping PDF\n";
+            error_log("Skipping PDF");
             return new Silent($href);
         }
         if (strpos($href, "/url?q") !== false) {
@@ -16,7 +16,7 @@ class Factory
         } else {
             $key = get_domain($href);
         }
-        echo "key = " . json_encode($key);
+        //echo "key = " . json_encode($key);
         /*
         $parts = explode("=", $href);
         if (count($parts) === 1) {
