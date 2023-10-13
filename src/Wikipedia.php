@@ -26,7 +26,7 @@ class Wikipedia extends Base
 
         $output;
         exec("pandoc --from markdown --to plain /tmp/queryresult.md", $output);
-        return $output;
+        return implode("\n", $output);
 
         //echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
 

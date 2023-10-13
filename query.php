@@ -40,7 +40,7 @@ function parseHtml($content, $opt)
     //foreach (array_slice($as, 0, (int) $opt['n'] ?? 10) as $i => $a) {
     foreach ($as as $i => $a) {
         //error_log("loop $i");
-        if ($k >= (int) ($opt['n'] ?? 10)) {
+        if ($k >= (int) ($opt['n'] ?? 1)) {
             break;
         }
         $j = $i + 1;

@@ -11,7 +11,7 @@ class Base
     protected $href;
     public function __construct($href)
     {
-        //echo "Making " . static::class . "\n";
+        error_log("Making " . static::class);
         $this->href = $href;
     }
 
@@ -86,5 +86,20 @@ class Base
         $dom = new DOMDocument();
         @$dom->loadHTML($content);
         return $dom;
+    }
+
+    public function getTextFromNode($node)
+    {
+        $tmpDom = new DOMDocument();
+        $root = $tmpDom->createElement('html');
+        $root = $tmpDom->appendChild($root);
+        $root->appendChild($tmpDom->importNode($node, true));
+        $result = file_put_contents("/tmp/queryresult.html", $tmpDom->saveHTML());
+        if ($result === false) {
+            throw new Exception("Could not write to /tmp file");
+        }
+        $output;
+        exec("pandoc --from html --to plain /tmp/queryresult.html", $output);
+        return implode("\n", $output);
     }
 }

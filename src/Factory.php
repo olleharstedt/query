@@ -36,7 +36,9 @@ class Factory
             "en.wikipedia.org"   => Wikipedia::class,
             "google.com"         => Silent::class,
             "www.php.net"        => Phpnet::class,
-            "php.net"            => Phpnet::class
+            "php.net"            => Phpnet::class,
+            "www.reddit.com"     => Reddit::class,
+            "reddit.com"         => Reddit::class
         ];
         if (isset($map[$key])) {
             return new $map[$key]($href);
