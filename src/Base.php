@@ -3,6 +3,7 @@
 namespace Query;
 
 use DOMDocument;
+use Exception;
 use League\HTMLToMarkdown\HtmlConverter;
 
 class Base
