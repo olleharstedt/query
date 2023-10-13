@@ -49,13 +49,16 @@ class Factory
         }
     }
 
-    public function make($href)
+    public function make()
     {
+        // PHP 7.2 friendly pipe
+        // TODO: Replace with (...) notation
         return pipe(
-            $this->abortAtPdf(...),
-            $this->getKey(...),
-            $this->makeThing(...)
+            [$this, "abortAtPdf"],
+            [$this, "getKey"],
+            [$this, "makeThing"]
         );
+
         /*
         if (ends_with($href, '.pdf')) {
             error_log("Skipping PDF");

@@ -9,6 +9,7 @@ require __DIR__.'/src/functions.query.php';
 
 //ini_set('user_agent','Mozilla/4.0 (compatible; MSIE 6.0)');
 ini_set('user_agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+error_reporting(1);
 
 $config = include(__DIR__ . '/config.php');
 
@@ -27,7 +28,7 @@ printf("query = %s\n", $query);
 
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
-parseHtml(getGoogleFromQuery($query), $opt);
+parseHtml(Query\getGoogleFromQuery($query), $opt);
 
 function parseHtml($content, $opt)
 {
@@ -51,7 +52,10 @@ function parseHtml($content, $opt)
                 continue;
             }
             $k++;
-            $t = $fac->make($href);
+            $t = $fac
+                ->make()
+                ->with($href)
+                ->run();
             $buffer .= $t->show();
         }
     }

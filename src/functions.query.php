@@ -1,5 +1,7 @@
 <?php
 
+namespace Query;
+
 // @see https://stackoverflow.com/questions/16027102/get-domain-name-from-full-url
 function get_domain($url)
 {
@@ -50,7 +52,8 @@ function getJsonFromApi(string $query, $config): array
     }
 }
 
-function pipe($args...)
+function pipe()
 {
+    $args = func_get_args();
     return new Pipe($args);
 }
