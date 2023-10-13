@@ -8,18 +8,19 @@ class Stackoverflow extends Base
 {
     public function show()
     {
+        $buffer = "";
         $link = $this->getLink();
-        echo "Fetching $link...\n";
+        $buffer .= "Fetching $link...\n";
         $content = file_get_contents($link);
         if ($content) {
-            echo "Got content\n";
+            $buffer .= "Got content\n";
             $crawler = new Crawler($content);
-            echo "POSTCELL\n";
+            $buffer .= "POSTCELL\n";
             $rawText = $crawler->filter("div.postcell")->text('', false);
-            echo trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
-            echo "ANSWERCELLS\n";
+            $buffer .= trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
+            $buffer .= "ANSWERCELLS\n";
             $rawText = $crawler->filter("div.answercell")->text('', false);
-            echo trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
+            $buffer .= trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
 
             //$dom = new DOMDocument();
             //@$dom->loadHTML($content);
@@ -32,12 +33,13 @@ class Stackoverflow extends Base
             //foreach ($divs as $div) {
                 //$t = trim(preg_replace('/\s+/', ' ', $div->textContent));
                 //if ($t) {
-                    //echo $t . PHP_EOL;
+                    //$buffer .= $t . PHP_EOL;
                 //}
             //}
         } else {
         }
-        echo "DONE\n";
+        $buffer .= "DONE\n";
+        return $buffer;
     }
 }
 

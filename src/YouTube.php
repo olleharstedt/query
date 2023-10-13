@@ -6,8 +6,7 @@ class YouTube extends Base
 {
     public function show()
     {
-        echo "Can't show youtube\n";
-        return;
+        return "Can't show youtube\n";
 
         $parts = explode("=", $this->href);
         $parts = explode("&", $parts[1]);
@@ -24,8 +23,7 @@ class YouTube extends Base
         //echo $crawler->filter('h1')->outerHtml() . PHP_EOL;
         //echo $crawler->filter('h1')->html() . PHP_EOL;
         $crawler = $client->waitFor('h1');
-        echo json_encode($crawler->filter('h1')->text()) . PHP_EOL;
-        die;
+        return json_encode($crawler->filter('h1')->text()) . PHP_EOL;
 
         //$dom = new DOMDocument();
         //$dom->load($content);

@@ -17,8 +17,9 @@ class Base
 
     public function show()
     {
+        $buffer = "";
         $link = $this->getLink();
-        echo "Fetching $link...\n";
+        $buffer .= "Fetching $link...\n";
         $content = @file_get_contents($link);
         if ($content) {
             $dom = new DOMDocument();
@@ -39,7 +40,7 @@ class Base
                     }
                     system("pandoc --from markdown --to plain /tmp/queryresult.md");
 
-                    //echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
+                    //$buffer .= trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
                     // TODO: Only show first article
                     return;
                 }
@@ -47,20 +48,21 @@ class Base
 
             $h1s = $dom->getElementsByTagName("h1");
             if ($h1s && $h1s[0]) {
-                echo $h1s[0]->textContent . PHP_EOL;
+                $buffer .= $h1s[0]->textContent . PHP_EOL;
             }
             $ps = $dom->getElementsByTagName("p");
             foreach($ps as $p) {
-                echo trim($p->textContent) . PHP_EOL;
+                $buffer .= trim($p->textContent) . PHP_EOL;
             }
 
             //$crawler = new Crawler($content);
             //$rawText = $crawler->filter("article")->text('', false);
-            //echo trim($rawText) . PHP_EOL;
+            //$buffer .= trim($rawText) . PHP_EOL;
         } else {
             printf("Got content %s\n", json_encode($content));
         }
-        echo "DONE\n";
+        $buffer .= "DONE\n";
+        return $buffer;
     }
 
     public function getLink()

@@ -34,10 +34,11 @@ function parseHtml($content, $opt)
     @$dom->loadHTML($content);
     $fac = new Factory();
     $as = $dom->getElementsByTagName("a");
+    $buffer = "";
     //foreach (array_slice($as, 0, (int) $opt['n'] ?? 10) as $i => $a) {
     foreach ($as as $i => $a) {
         if ($i > (int) ($opt['n'] ?? 10)) {
-            exit;
+            break;
         }
         $j = $i + 1;
         if ($a->textContent) {
@@ -47,7 +48,7 @@ function parseHtml($content, $opt)
             }
             //echo $href . PHP_EOL;
             $t = $fac->make($href);
-            $t->show();
+            $buffer .= $t->show();
             //echo $a->textContent . PHP_EOL;
             $parent = $a->parentNode;
             //$sibling = $parent->nextSibling;
@@ -58,7 +59,6 @@ function parseHtml($content, $opt)
                 //echo $sibling->textContent . PHP_EOL;
             }
             //echo $href . PHP_EOL;
-            echo PHP_EOL;
             //if (strpos($href
 
 
@@ -84,7 +84,7 @@ function parseHtml($content, $opt)
             $c = readline_info('line_buffer');
             switch ($c) {
                 case "q":
-                    exit;
+                    //exit;
                 case " ":
                     continue 2;
                 case "w":
@@ -98,6 +98,7 @@ function parseHtml($content, $opt)
              */
         }
     }
+    echo substr($buffer, 0, 1000);
 }
 
 // $json coming from google api

@@ -25,6 +25,6 @@ class Phpnet extends Base
         error_log('before system');
         $output;
         exec("pandoc --from html --to plain /tmp/queryresult.html", $output);
-        echo $output;
+        return $output;
     }
 }

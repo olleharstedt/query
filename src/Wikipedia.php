@@ -24,7 +24,9 @@ class Wikipedia extends Base
             throw new Exception("Could not write to /tmp file");
         }
 
-        system("pandoc --from markdown --to plain /tmp/queryresult.md");
+        $output;
+        exec("pandoc --from markdown --to plain /tmp/queryresult.md", $output);
+        return $output;
 
         //echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
 
