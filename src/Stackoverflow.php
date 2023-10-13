@@ -37,6 +37,7 @@ class Stackoverflow extends Base
                 //}
             //}
         } else {
+            error_log("No content");
         }
         $buffer .= "DONE\n";
         return $buffer;

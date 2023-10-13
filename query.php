@@ -3,6 +3,7 @@
 //use Symfony\Component\Panther\Client;
 //use Symfony\Component\DomCrawler\Crawler;
 use Query\Factory;
+use Query\ErrorLogLogger;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
@@ -55,6 +56,7 @@ function parseHtml($content, $opt)
             $t = $fac
                 ->make()
                 ->with($href)
+                ->setLogger(new ErrorLogLogger())
                 ->run();
             $buffer .= $t->show();
         }

@@ -27,6 +27,8 @@ class Factory
             //return new Silent($href);
             throw new Exception("Can't read PDF");
         }
+        // Needed to make pipe work
+        return $href;
     }
 
     public function getKey($href)
