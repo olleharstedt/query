@@ -14,21 +14,31 @@ $config = include(__DIR__ . '/config.php');
 
 $query = '';
 for ($i = 1; $i < count($argv); $i++) {
+    if (strpos($argv[$i], "-") !== false) {
+        continue;
+    }
     $query .= ' ' . $argv[$i];
 }
 //echo $query . PHP_EOL;
 $query = urlencode($query);
 
+$opt = getopt("n::");
+
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
-parseHtml(getGoogleFromQuery($query));
+parseHtml(getGoogleFromQuery($query), $opt);
 
-function parseHtml($content)
+function parseHtml($content, $opt)
 {
     $dom = new DOMDocument();
     @$dom->loadHTML($content);
     $fac = new Factory();
-    foreach ($dom->getElementsByTagName("a") as $i => $a) {
+    $as = $dom->getElementsByTagName("a");
+    //foreach (array_slice($as, 0, (int) $opt['n'] ?? 10) as $i => $a) {
+    foreach ($as as $i => $a) {
+        if ($i > (int) ($opt['n'] ?? 10)) {
+            exit;
+        }
         $j = $i + 1;
         if ($a->textContent) {
             $href = $a->getAttribute("href");
@@ -65,6 +75,7 @@ function parseHtml($content)
             // Close the stream.
             //fclose($stdin);
 
+            /*
             back:
             echo "(You're viewing result {$j})\n";
             echo "(Click q to quit, w to dump with w3m, space to continue)\n";
@@ -84,6 +95,7 @@ function parseHtml($content)
                 default:
                     goto back;
             }
+             */
         }
     }
 }

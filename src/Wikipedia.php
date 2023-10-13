@@ -10,11 +10,7 @@ class Wikipedia extends Base
 {
     public function show()
     {
-        $link = $this->getLink();
-        echo "Fetching $link...\n";
-        $content = file_get_contents($link);
-        $dom = new DOMDocument();
-        @$dom->loadHTML($content);
+        $dom = $this->getDom();
         $body = $dom->getElementById("mw-content-text");
 
         $converter = new HtmlConverter(['strip_tags' => true]);

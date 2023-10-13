@@ -33,7 +33,10 @@ class Factory
             "support.google.com" => Silent::class,
             "stackoverflow.com"  => Stackoverflow::class,
             "wikipedia.org"      => Wikipedia::class,
-            "en.wikipedia.org"   => Wikipedia::class
+            "en.wikipedia.org"   => Wikipedia::class,
+            "google.com"         => Silent::class,
+            "www.php.net"        => Phpnet::class,
+            "php.net"            => Phpnet::class
         ];
         if (isset($map[$key])) {
             return new $map[$key]($href);

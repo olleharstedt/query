@@ -6,7 +6,9 @@
         "phpunit/phpunit": "^8.5"
     },
     "require": {
-        "league/html-to-markdown": "^5.1"
+        "league/html-to-markdown": "^5.1",
+        "symfony/dom-crawler": "^6.3",
+        "symfony/css-selector": "^6.3"
     },
     "autoload": {
         "psr-4": {

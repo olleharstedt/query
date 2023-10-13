@@ -72,4 +72,17 @@ class Base
         $parts = explode("&", $parts[1]);
         return urldecode($parts[0]);
     }
+
+    /**
+     * @return DOMDocument
+     */
+    public function getDom()
+    {
+        $link = $this->getLink();
+        echo "Fetching $link...\n";
+        $content = file_get_contents($link);
+        $dom = new DOMDocument();
+        @$dom->loadHTML($content);
+        return $dom;
+    }
 }
