@@ -32,7 +32,13 @@ class Base
                     $root = $tmpDom->appendChild($root);
                     $root->appendChild($tmpDom->importNode($article, true));
                     $markdown = $converter->convert($tmpDom->saveHTML());
-                    echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
+                    $result = file_put_contents("/tmp/queryresult.md", $markdown);
+                    if ($result === false) {
+                        throw new Exception("Could not write to /tmp file");
+                    }
+                    system("pandoc --from markdown --to plain /tmp/queryresult.md");
+
+                    //echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
                     // TODO: Only show first article
                     return;
                 }

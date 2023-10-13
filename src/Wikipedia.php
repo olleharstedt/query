@@ -4,6 +4,7 @@ namespace Query;
 
 use DOMDocument;
 use League\HTMLToMarkdown\HtmlConverter;
+use Exception;
 
 class Wikipedia extends Base
 {
@@ -22,7 +23,14 @@ class Wikipedia extends Base
         $root = $tmpDom->appendChild($root);
         $root->appendChild($tmpDom->importNode($body, true));
         $markdown = $converter->convert($tmpDom->saveHTML());
-        echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
+        $result = file_put_contents("/tmp/queryresult.md", $markdown);
+        if ($result === false) {
+            throw new Exception("Could not write to /tmp file");
+        }
+
+        system("pandoc --from markdown --to plain /tmp/queryresult.md");
+
+        //echo trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
 
         /*
         $clearText = preg_replace( "/\n\s+/", "\n", rtrim(html_entity_decode(strip_tags($body->textContent))) );
