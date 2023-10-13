@@ -2,6 +2,8 @@
 
 namespace Query;
 
+use Symfony\Component\DomCrawler\Crawler;
+
 class Stackoverflow extends Base
 {
     public function show()

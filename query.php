@@ -75,7 +75,7 @@ function parseHtml($content)
                 case "q":
                     exit;
                 case " ":
-                    continue;
+                    continue 2;
                 case "w":
                     $link = $t->getLink();
                     system("w3m $link | cat");

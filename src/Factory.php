@@ -28,10 +28,12 @@ class Factory
         }
          */
         $map = [
-            "www.quora.com" => Query::class,
-            "www.youtube.com" => YouTube::class,
+            "www.quora.com"      => Query::class,
+            "www.youtube.com"    => YouTube::class,
             "support.google.com" => Silent::class,
-            "stackoverflow.com" => Stackoverflow::class,
+            "stackoverflow.com"  => Stackoverflow::class,
+            "wikipedia.org"      => Wikipedia::class,
+            "en.wikipedia.org"   => Wikipedia::class
         ];
         if (isset($map[$key])) {
             return new $map[$key]($href);
