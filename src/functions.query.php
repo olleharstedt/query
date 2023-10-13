@@ -49,3 +49,8 @@ function getJsonFromApi(string $query, $config): array
         throw new Exception($error);
     }
 }
+
+function pipe($args...)
+{
+    return new Pipe($args);
+}
