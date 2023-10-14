@@ -16,26 +16,29 @@ class Pipe
     /** @var ?LoggerInterface */
     private $logger;
 
-    /**
-     * @psalm-mutation-free
-     */
+    /** @psalm-mutation-free */
     public function __construct(array $args)
     {
         $this->callables = $args;
     }
 
+    /** @psalm-mutation-free */
     public function with(mixed $start): static
     {
-        $this->start = $start;
-        return $this;
+        $clone = clone $this;
+        $clone->start = $start;
+        return $clone;
     }
 
+    /** @psalm-mutation-free */
     public function setLogger(LoggerInterface $logger): static
     {
-        $this->logger = $logger;
-        return $this;
+        $clone = clone $this;
+        $clone->logger= $logger;
+        return $clone;
     }
 
+    /** @psalm-mutation-free */
     public function run(): mixed
     {
         $arg = $this->start ?? null;
