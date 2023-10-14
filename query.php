@@ -4,6 +4,7 @@
 //use Symfony\Component\DomCrawler\Crawler;
 use Query\Factory;
 use Query\ErrorLogLogger;
+use Query\ParseHtml;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
@@ -29,41 +30,10 @@ printf("query = %s\n", $query);
 
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
-parseHtml(Query\getGoogleFromQuery($query), $opt);
-
-function parseHtml($content, $opt)
-{
-    $dom = new DOMDocument();
-    @$dom->loadHTML($content);
-    $fac = new Factory();
-    $as = $dom->getElementsByTagName("a");
-    $buffer = "";
-    $k = 0;
-    //foreach (array_slice($as, 0, (int) $opt['n'] ?? 10) as $i => $a) {
-    foreach ($as as $i => $a) {
-        //error_log("loop $i");
-        if ($k >= (int) ($opt['n'] ?? 1)) {
-            break;
-        }
-        $j = $i + 1;
-        if ($a->textContent) {
-            $href = $a->getAttribute("href");
-            //printf("<a> content = %s, href = %s\n", $a->textContent, $href);
-            if (strpos($href, "url") !== 1) {
-                continue;
-            }
-            $k++;
-            $t = $fac
-                ->make()
-                ->with($href)
-                ->setLogger(new ErrorLogLogger())
-                ->run();
-            $buffer .= $t->show();
-        }
-    }
-    echo substr($buffer, 0, (int) ($opt['c'] ?? 2000));
-    echo PHP_EOL;
-}
+//parseHtml(Query\getGoogleFromQuery($query), $opt);
+$parser = new ParseHtml(new Factory(), $opt);
+$buffer = $parser->parse(Query\getGoogleFromQuery($query));
+echo $buffer;
 
 // $json coming from google api
 function parseJson(array $json)

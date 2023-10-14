@@ -11,6 +11,7 @@ class ParseHtml
 {
     private Factory $factory;
     private array $options;
+    private int $k = 0;
 
     public function __construct(Factory $factory, array $options)
     {
@@ -18,7 +19,7 @@ class ParseHtml
         $this->options = $options;
     }
 
-    public function parse(string $content): void
+    public function parse(string $content): string
     {
         if (empty($content)) {
             throw new InvalidArgumentException("content is empty");
@@ -27,28 +28,24 @@ class ParseHtml
         @$dom->loadHTML($content);
         $as = $dom->getElementsByTagName("a");
         $buffer = "";
-        $k = 0;
         //foreach (array_slice($as, 0, (int) $this->options['n'] ?? 10) as $i => $a) {
         foreach ($as as $i => $a) {
-            if ($k >= (int) ($this->options['n'] ?? 1)) {
+            if ($this->k >= (int) ($this->options['n'] ?? 1)) {
                 continue;
             }
             $buffer .= $this->processAnchor($a);
-            if (!empty($a->textContent)) {
-                $k++;
-            }
         }
-        echo substr($buffer, 0, (int) ($this->options['c'] ?? 2000));
-        echo PHP_EOL;
+        return substr($buffer, 0, (int) ($this->options['c'] ?? 2000)) . PHP_EOL;
     }
 
     public function processAnchor(DOMElement $a): string
     {
-        //error_log("loop $i");
+        //error_log("loop");
         if ($a->textContent) {
             $href = $a->getAttribute("href");
             //printf("<a> content = %s, href = %s\n", $a->textContent, $href);
             if (strpos($href, "url") !== 1) {
+                //error_log("return 1 " . $href);
                 return '';
             }
             $t = $this->factory
@@ -56,8 +53,10 @@ class ParseHtml
                 ->with($href)
                 ->setLogger(new ErrorLogLogger())
                 ->run();
+            $this->k++;
             return $t->show();
         } else {
+            //error_log("return 2");
             return '';
         }
     }
