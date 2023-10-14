@@ -18,8 +18,56 @@ class Base implements SiteInterface
         $this->href = $href;
     }
 
+    public function contentToArticles(string $content): DOMElement
+    {
+        $dom = new DOMDocument();
+	@$dom->loadHTML($content);
+	return $dom->getElementsByTagName("article");
+    }
+
+    public function pickFirst(array $things): mixed
+    {
+        if (count($things) > 0) {
+	    return$things[0];
+	} else {
+	    throw new RuntimeException("Found no thing");
+	}
+    }
+
+    public function articleToDom(DOMElement $article): DOMDocument
+    {
+        $tmpDom = new DOMDocument();
+	$root = $tmpDom->createElement('html');
+	$root = $tmpDom->appendChild($root);
+	$root->appendChild($tmpDom->importNode($article, true));
+	return $tmpDom;
+    }
+
+    public function articleToString(DOMElement $article): string
+    {
+	return pipe(
+	    $this->articleToDom(...),
+	    $this->domToMarkdown(...),
+	    fn($md) => $this->io->filePutContents('/tmp/tmp.md', $md)
+	)->with($article);
+    }
+
+    public function domToMarkdown(DOMDocument $dom)
+    {
+        $converter = new HtmlConverter(['strip_tags' => true]);
+	return $converter->convert($tmpDom->saveHTML());
+    }
+
     public function show(): string
     {
+	return pipe(
+	    $this->getLink(...),
+	    $this->io->fileGetContents(...),
+	    $this->contentToArticles(...),
+	    $this->pickFirst(...),
+	    $this->articleToString(...)
+	);
+
         $buffer = "";
         $link = $this->getLink();
         $buffer .= "Fetching $link...\n";
