@@ -16,6 +16,9 @@ class Pipe
     /** @var ?LoggerInterface */
     private $logger;
 
+    /**
+     * @psalm-mutation-free
+     */
     public function __construct(array $args)
     {
         $this->callables = $args;

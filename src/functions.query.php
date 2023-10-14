@@ -59,6 +59,9 @@ function getJsonFromApi(string $query, array $config): array
     }
 }
 
+/**
+ * @psalm-mutation-free
+ */
 function pipe(): Pipe
 {
     $args = func_get_args();
