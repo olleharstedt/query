@@ -2,20 +2,24 @@
 
 namespace Query;
 
-use Exception;
+use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Reddit extends Base
 {
-    public function show()
+    public function show(): string
     {
         $dom = $this->getDom();
         $siteTable = $dom->getElementById("siteTable");
         if (empty($siteTable)) {
             echo $dom->saveHTML();
-            throw new Exception("Found no element with id siteTable");
+            throw new RuntimeException("Found no element with id siteTable");
         }
         $commentArea = $siteTable->nextSibling;
+
+        if (empty($commentArea)) {
+            throw new RuntimeException("Found no comment area");
+        }
 
         //$crawler = new Symfony\Component\DomCrawler\Crawler($html);
         //$entry = $crawler->filter('.entry.unvoted')->outerHtml();
@@ -25,7 +29,7 @@ class Reddit extends Base
         return $buffer;
     }
 
-    public function getLink()
+    public function getLink(): string
     {
         $href = parent::getLink();
         return str_replace('www.reddit.com', 'old.reddit.com', $href);

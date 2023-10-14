@@ -2,10 +2,10 @@
 
 namespace Query;
 
-class ErrorLogLogger
+class ErrorLogLogger implements LoggerInterface
 {
-    public function debug($s)
+    public function debug(string $message): void
     {
-        error_log($s);
+        error_log($message);
     }
 }

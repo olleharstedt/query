@@ -3,19 +3,22 @@
 namespace Query;
 
 use DOMDocument;
+use DOMNode;
 use Exception;
+use RuntimeException;
 use League\HTMLToMarkdown\HtmlConverter;
 
-class Base
+class Base implements SiteInterface
 {
-    protected $href;
-    public function __construct($href)
+    protected string $href;
+
+    public function __construct(string $href)
     {
         error_log("Making " . static::class);
         $this->href = $href;
     }
 
-    public function show()
+    public function show(): string
     {
         $buffer = "";
         $link = $this->getLink();
@@ -27,7 +30,7 @@ class Base
 
             $articles = $dom->getElementsByTagName("article");
             $converter = new HtmlConverter(['strip_tags' => true]);
-            if ($articles) {
+            if (count($articles) > 0) {
                 foreach($articles as $article) {
                     $tmpDom = new DOMDocument();
                     $root = $tmpDom->createElement('html');
@@ -38,16 +41,17 @@ class Base
                     if ($result === false) {
                         throw new Exception("Could not write to /tmp file");
                     }
-                    system("pandoc --from markdown --to plain /tmp/queryresult.md");
+                    $output = '';
+                    exec("pandoc --from markdown --to plain /tmp/queryresult.md", $output);
 
                     //$buffer .= trim(preg_replace('/^\s*$/m', ' ', $markdown)) . PHP_EOL;
                     // TODO: Only show first article
-                    return;
+                    return implode("\n", $output);
                 }
             }
 
             $h1s = $dom->getElementsByTagName("h1");
-            if ($h1s && $h1s[0]) {
+            if (isset($h1s[0])) {
                 $buffer .= $h1s[0]->textContent . PHP_EOL;
             }
             $ps = $dom->getElementsByTagName("p");
@@ -65,7 +69,7 @@ class Base
         return $buffer;
     }
 
-    public function getLink()
+    public function getLink(): string
     {
         $parts = explode("=", $this->href);
         if (count($parts) === 1) {
@@ -75,20 +79,20 @@ class Base
         return urldecode($parts[0]);
     }
 
-    /**
-     * @return DOMDocument
-     */
-    public function getDom()
+    public function getDom(): DOMDocument
     {
         $link = $this->getLink();
         error_log("Fetching $link...");
         $content = file_get_contents($link);
+        if (empty($content)) {
+            throw new RuntimeException("Could not get content from link $link");
+        }
         $dom = new DOMDocument();
         @$dom->loadHTML($content);
         return $dom;
     }
 
-    public function getTextFromNode($node)
+    public function getTextFromNode(DOMNode $node): string
     {
         $tmpDom = new DOMDocument();
         $root = $tmpDom->createElement('html');
@@ -98,7 +102,7 @@ class Base
         if ($result === false) {
             throw new Exception("Could not write to /tmp file");
         }
-        $output;
+        $output = '';
         exec("pandoc --from html --to plain /tmp/queryresult.html", $output);
         return implode("\n", $output);
     }

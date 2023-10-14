@@ -4,14 +4,17 @@ namespace Query;
 
 use DOMDocument;
 use League\HTMLToMarkdown\HtmlConverter;
-use Exception;
+use RuntimeException;
 
 class Wikipedia extends Base
 {
-    public function show()
+    public function show(): string
     {
         $dom = $this->getDom();
         $body = $dom->getElementById("mw-content-text");
+        if ($body === null) {
+            throw new RuntimeException("Found no mw-content-text");
+        }
 
         $converter = new HtmlConverter(['strip_tags' => true]);
         $tmpDom = new DOMDocument();
@@ -21,10 +24,10 @@ class Wikipedia extends Base
         $markdown = $converter->convert($tmpDom->saveHTML());
         $result = file_put_contents("/tmp/queryresult.md", $markdown);
         if ($result === false) {
-            throw new Exception("Could not write to /tmp file");
+            throw new RuntimeException("Could not write to /tmp file");
         }
 
-        $output;
+        $output = '';
         exec("pandoc --from markdown --to plain /tmp/queryresult.md", $output);
         return implode("\n", $output);
 

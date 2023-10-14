@@ -1,11 +1,12 @@
 {
     "config": {
         "platform": {
-            "php": "7.2.24"
+            "php": "8.2.0"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^8.5",
+        "vimeo/psalm": "^4.30"
     },
     "require": {
         "league/html-to-markdown": "^5.1",

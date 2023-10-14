@@ -4,9 +4,10 @@ namespace Query;
 
 class Silent extends Base
 {
-    public function show()
+    public function show(): string
     {
         // Do nothing.
+        return '';
     }
 }
 

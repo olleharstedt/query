@@ -6,7 +6,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Stackoverflow extends Base
 {
-    public function show()
+    public function show(): string
     {
         $buffer = "";
         $link = $this->getLink();

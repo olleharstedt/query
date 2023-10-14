@@ -4,7 +4,7 @@ namespace Query;
 
 class YouTube extends Base
 {
-    public function show()
+    public function show(): string
     {
         return "Can't show youtube\n";
 

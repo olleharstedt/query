@@ -10,28 +10,30 @@ use RuntimeException;
  */
 class Pipe
 {
-    private $callables;
-    private $start;
+    private array $callables;
+    private mixed $start;
+
+    /** @var ?LoggerInterface */
     private $logger;
 
-    public function __construct($args)
+    public function __construct(array $args)
     {
         $this->callables = $args;
     }
 
-    public function with($start)
+    public function with(mixed $start): static
     {
         $this->start = $start;
         return $this;
     }
 
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger): static
     {
         $this->logger = $logger;
         return $this;
     }
 
-    public function run()
+    public function run(): mixed
     {
         $arg = $this->start ?? null;
         foreach ($this->callables as $callable) {
@@ -48,7 +50,7 @@ class Pipe
         return $arg;
     }
 
-    protected function callableToString($callable)
+    protected function callableToString(mixed $callable): string
     {
         if (is_array($callable)) {
             return get_class($callable[0]) . '::' . $callable[1];

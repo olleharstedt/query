@@ -6,8 +6,8 @@ use Exception;
 
 class Factory
 {
+    /** @var array */
     public static $map = [
-        "www.quora.com"      => Query::class,
         "www.youtube.com"    => YouTube::class,
         "support.google.com" => Silent::class,
         "stackoverflow.com"  => Stackoverflow::class,
@@ -20,7 +20,7 @@ class Factory
         "reddit.com"         => Reddit::class
     ];
 
-    public function abortAtPdf($href)
+    public function abortAtPdf(string $href): string
     {
         if (ends_with($href, '.pdf')) {
             error_log("Skipping PDF");
@@ -31,7 +31,7 @@ class Factory
         return $href;
     }
 
-    public function getKey($href)
+    public function getKey(string $href): array
     {
         if (strpos($href, "/url?q") !== false) {
             $parts = explode("=", $href);
@@ -39,11 +39,13 @@ class Factory
         } else {
             $key = get_domain($href);
         }
-        return $key;
+        return [$key, $href];
     }
 
-    public function makeThing($key)
+    public function makeThing(array $args): object
     {
+        $key  = $args[0];
+        $href = $args[1];
         if (isset(self::$map[$key])) {
             return new self::$map[$key]($href);
         } else {
@@ -51,7 +53,7 @@ class Factory
         }
     }
 
-    public function make()
+    public function make(): Pipe
     {
         // PHP 7.2 friendly pipe
         // TODO: Replace with (...) notation
