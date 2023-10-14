@@ -53,6 +53,9 @@ class Factory
         }
     }
 
+    /**
+     * @psalm-pure
+     */
     public function make(): Pipe
     {
         // PHP 7.2 friendly pipe
