@@ -19,7 +19,6 @@ class ParseHtml
         $this->options = $options;
     }
 
-    /** @psalm-mutation-free */
     public function parse(string $content): string
     {
         if (empty($content)) {
@@ -39,7 +38,6 @@ class ParseHtml
         return substr($buffer, 0, (int) ($this->options['c'] ?? 2000)) . PHP_EOL;
     }
 
-    /** @psalm-mutation-free */
     public function processAnchor(DOMElement $a): string
     {
         //error_log("loop");

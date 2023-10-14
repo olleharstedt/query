@@ -38,7 +38,6 @@ class Pipe
         return $clone;
     }
 
-    /** @psalm-mutation-free */
     public function run(): mixed
     {
         $arg = $this->start ?? null;
@@ -56,6 +55,7 @@ class Pipe
         return $arg;
     }
 
+    /** @psalm-mutation-free */
     protected function callableToString(mixed $callable): string
     {
         if (is_array($callable)) {
