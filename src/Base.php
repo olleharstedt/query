@@ -34,9 +34,10 @@ class Base implements SiteInterface
         return $dom->getElementsByTagName("article");
     }
 
-    public function pickFirst(Traversable $things): mixed
+    public function pickFirst(iterable $things): mixed
     {
         $len = 0;
+        // Can't count() Traversable
         foreach ($things as $_) {
             $len++;
         }
