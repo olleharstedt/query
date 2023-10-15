@@ -4,8 +4,11 @@ namespace Query;
 
 class YouTube extends Base
 {
-    public function show(): string
+    public function show(): Pipe
     {
+        return pipe()->with("Can't show youtube");
+
+        //TODO
         return "Can't show youtube\n";
 
         $parts = explode("=", $this->href);

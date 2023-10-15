@@ -8,8 +8,10 @@ use RuntimeException;
 
 class Wikipedia extends Base
 {
-    public function show(): string
+    public function show(): Pipe
     {
+        return pipe()->with("TODO");
+
         $dom = $this->getDom();
         $body = $dom->getElementById("mw-content-text");
         if ($body === null) {

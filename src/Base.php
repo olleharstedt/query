@@ -8,6 +8,8 @@ use DOMElement;
 use DOMNodeList;
 use Exception;
 use RuntimeException;
+use InvalidArgumentException;
+use Traversable;
 use League\HTMLToMarkdown\HtmlConverter;
 
 class Base implements SiteInterface
@@ -19,59 +21,69 @@ class Base implements SiteInterface
     {
         error_log("Making " . static::class);
         $this->href = $href;
-	$this->io   = $io;
+        $this->io   = $io;
     }
 
     public function contentToArticles(string $content): DOMNodeList
     {
+        if (empty($content)) {
+            throw new InvalidArgumentException("Content can't be empty");
+        }
         $dom = new DOMDocument();
-	@$dom->loadHTML($content);
-	return $dom->getElementsByTagName("article");
+        @$dom->loadHTML($content);
+        return $dom->getElementsByTagName("article");
     }
 
-    public function pickFirst(Countable $things): mixed
+    public function pickFirst(Traversable $things): mixed
     {
-        if (count($things) > 0) {
-	    return$things[0];
-	} else {
-	    throw null;
-	}
+        $len = 0;
+        foreach ($things as $_) {
+            $len++;
+        }
+        if ($len > 0) {
+            foreach ($things as $_) {
+                return $_;
+            }
+            throw new Exception("Impossible");
+        } else {
+            return null;
+        }
     }
 
     public function articleToDom(DOMElement $article): DOMDocument
     {
         $tmpDom = new DOMDocument();
-	$root = $tmpDom->createElement('html');
-	$root = $tmpDom->appendChild($root);
-	$root->appendChild($tmpDom->importNode($article, true));
-	return $tmpDom;
+        $root = $tmpDom->createElement('html');
+        $root = $tmpDom->appendChild($root);
+        $root->appendChild($tmpDom->importNode($article, true));
+        return $tmpDom;
     }
 
     public function articleToString(DOMElement $article): Pipe
     {
-	return pipe(
-	    $this->articleToDom(...),
-	    $this->domToMarkdown(...),
-	    (new FilePutContents('/tmp/tmp.md')),
-	    (new RunPandoc('markdown', 'plain', '/tmp/tmp.md'))
-	)->with($article);
+        return pipe(
+            $this->articleToDom(...),
+            $this->domToMarkdown(...),
+            (new FilePutContents('/tmp/tmp.md')),
+            (new RunPandoc('markdown', 'plain', '/tmp/tmp.md'))
+        )->with($article);
     }
 
     public function domToMarkdown(DOMDocument $dom): string
     {
         $converter = new HtmlConverter(['strip_tags' => true]);
-	return $converter->convert($tmpDom->saveHTML());
+        return $converter->convert($dom->saveHTML());
     }
 
     public function show(): Pipe
     {
-	return pipe(
-	    $this->getLink(...),
-	    $this->io->fileGetContents(...),
-	    $this->contentToArticles(...),
-	    $this->pickFirst(...),
-	    $this->articleToString(...)
-	);
+        return pipe(
+            $this->getLink(...),
+            $this->io->fileGetContents(...),
+            $this->contentToArticles(...),
+            $this->pickFirst(...),
+            $this->articleToString(...)
+        );
 
         $buffer = "";
         $link = $this->getLink();

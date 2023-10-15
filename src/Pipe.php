@@ -19,7 +19,7 @@ class Pipe
     /** @psalm-mutation-free */
     public function __construct(array $args)
     {
-        error_log("Constructing pipe with " . json_encode($args));
+        //error_log("Constructing pipe with " . json_encode($args));
         $this->callables = $args;
     }
 
@@ -42,7 +42,7 @@ class Pipe
     public function run(): mixed
     {
         $arg = $this->start ?? null;
-        error_log("Running pipe with " . json_encode($arg));
+        //error_log("Running pipe with " . json_encode($arg));
         foreach ($this->callables as $callable) {
             if ($this->logger) {
                 $this

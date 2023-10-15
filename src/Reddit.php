@@ -7,8 +7,10 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Reddit extends Base
 {
-    public function show(): string
+    public function show(): Pipe
     {
+        return pipe()->with("TODO");
+
         $dom = $this->getDom();
         $siteTable = $dom->getElementById("siteTable");
         if (empty($siteTable)) {

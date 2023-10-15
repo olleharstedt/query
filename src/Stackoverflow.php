@@ -6,7 +6,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Stackoverflow extends Base
 {
-    public function processContent($content)
+    public function processContent(string $content): string
     {
         $buffer = "";
         $buffer .= "Got content\n";
