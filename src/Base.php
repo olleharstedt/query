@@ -36,19 +36,10 @@ class Base implements SiteInterface
 
     public function pickFirst(iterable $things): mixed
     {
-        $len = 0;
-        // Can't count() Traversable
         foreach ($things as $_) {
-            $len++;
+            return $_;
         }
-        if ($len > 0) {
-            foreach ($things as $_) {
-                return $_;
-            }
-            throw new Exception("Impossible");
-        } else {
-            return null;
-        }
+        return null;
     }
 
     public function articleToDom(DOMElement $article): DOMDocument

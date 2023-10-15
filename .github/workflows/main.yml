@@ -21,3 +21,5 @@ jobs:
           ls -la
           composer install -vvv
           php vendor/bin/psalm
+          XDEBUG_MODE=coverage php ./vendor/bin/phpunit --coverage-clover cov.xml tests
+          php tests/check_coverage.php cov.xml 80
