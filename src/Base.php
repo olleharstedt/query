@@ -48,7 +48,8 @@ class Base implements SiteInterface
 	return pipe(
 	    $this->articleToDom(...),
 	    $this->domToMarkdown(...),
-	    fn($md) => $this->io->filePutContents('/tmp/tmp.md', $md)
+	    (new FilePutContents('/tmp/tmp.md')),
+	    (new RunPandoc('markdown', 'plain', '/tmp/tmp.md'))
 	)->with($article);
     }
 
