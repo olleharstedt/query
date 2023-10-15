@@ -10,9 +10,12 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.2']
-    name: Moo
+    name: CI
     steps:
     - name: Psalm
       run: |
+        echo "here"
         composer install -vvv
+        echo "there"
         php vendor/bin/psalm
+        echo "done"
