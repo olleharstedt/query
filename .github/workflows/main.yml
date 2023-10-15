@@ -14,8 +14,7 @@ jobs:
     steps:
     - name: Psalm
       run: |
-        echo "here"
+        pwd
+        ls -la
         composer install -vvv
-        echo "there"
         php vendor/bin/psalm
-        echo "done"
