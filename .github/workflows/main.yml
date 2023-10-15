@@ -10,11 +10,14 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.2']
+
     name: CI
     steps:
-    - name: Psalm
-      run: |
-        pwd
-        ls -la
-        composer install -vvv
-        php vendor/bin/psalm
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Psalm
+        run: |
+          pwd
+          ls -la
+          composer install -vvv
+          php vendor/bin/psalm
