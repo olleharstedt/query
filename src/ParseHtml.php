@@ -57,7 +57,7 @@ class ParseHtml
             error_log(get_class($t));
             $showPipe = $t->show();
             error_log(get_class($showPipe));
-            return $showPipe->run();
+            return $showPipe->runAll();
         } else {
             error_log("return 2");
             return '';

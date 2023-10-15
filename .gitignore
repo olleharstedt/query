@@ -4,3 +4,4 @@ drivers/
 ses
 tags
 composer.phar
+*.swp

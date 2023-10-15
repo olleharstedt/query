@@ -57,6 +57,16 @@ class Pipe
         return $arg;
     }
 
+    public function runAll(): mixed
+    {
+        $arg = $this->run();
+        if ($arg instanceof Pipe) {
+            return $arg->runAll();
+        } else {
+            return $arg;
+        }
+    }
+
     /** @psalm-mutation-free */
     protected function callableToString(mixed $callable): string
     {

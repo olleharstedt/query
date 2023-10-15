@@ -4,6 +4,8 @@ namespace Query;
 
 use DOMDocument;
 use DOMNode;
+use DOMElement;
+use DOMNodeList;
 use Exception;
 use RuntimeException;
 use League\HTMLToMarkdown\HtmlConverter;
@@ -20,19 +22,19 @@ class Base implements SiteInterface
 	$this->io   = $io;
     }
 
-    public function contentToArticles(string $content): DOMElement
+    public function contentToArticles(string $content): DOMNodeList
     {
         $dom = new DOMDocument();
 	@$dom->loadHTML($content);
 	return $dom->getElementsByTagName("article");
     }
 
-    public function pickFirst(array $things): mixed
+    public function pickFirst(Countable $things): mixed
     {
         if (count($things) > 0) {
 	    return$things[0];
 	} else {
-	    throw new RuntimeException("Found no thing");
+	    throw null;
 	}
     }
 
