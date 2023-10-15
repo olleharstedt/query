@@ -1,0 +1,18 @@
+name: tmp
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  CI:
+    runs-on: Ubuntu 22.04
+    strategy:
+      matrix:
+        php-version: ['8.2']
+    name: Moo
+    steps:
+    - name: Psalm
+      run:
+        - composer install -vvv
+        - php vendor/bin/psalm
