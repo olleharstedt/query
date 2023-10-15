@@ -40,12 +40,12 @@ class ParseHtml
 
     public function processAnchor(DOMElement $a): string
     {
-        //error_log("loop");
+        error_log("loop");
         if ($a->textContent) {
             $href = $a->getAttribute("href");
-            //printf("<a> content = %s, href = %s\n", $a->textContent, $href);
+            printf("<a> content = %s, href = %s\n", $a->textContent, $href);
             if (strpos($href, "url") !== 1) {
-                //error_log("return 1 " . $href);
+                error_log("return 1 " . $href);
                 return '';
             }
             $t = $this->factory
@@ -54,9 +54,12 @@ class ParseHtml
                 ->setLogger(new ErrorLogLogger())
                 ->run();
             $this->k++;
-            return $t->show();
+            error_log(get_class($t));
+            $showPipe = $t->show();
+            error_log(get_class($showPipe));
+            return $showPipe->run();
         } else {
-            //error_log("return 2");
+            error_log("return 2");
             return '';
         }
     }

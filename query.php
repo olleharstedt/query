@@ -5,13 +5,15 @@
 use Query\Factory;
 use Query\ErrorLogLogger;
 use Query\ParseHtml;
+use Query\IO;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
 
 //ini_set('user_agent','Mozilla/4.0 (compatible; MSIE 6.0)');
 ini_set('user_agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-error_reporting(1);
+error_reporting(E_ALL);
+ini_set("display_errors", true);
 
 $config = include(__DIR__ . '/config.php');
 
@@ -31,7 +33,7 @@ printf("query = %s\n", $query);
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
 //parseHtml(Query\getGoogleFromQuery($query), $opt);
-$parser = new ParseHtml(new Factory(), $opt);
+$parser = new ParseHtml(new Factory(new IO), $opt);
 $buffer = $parser->parse(Query\getGoogleFromQuery($query));
 echo $buffer;
 

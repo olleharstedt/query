@@ -11,11 +11,13 @@ use League\HTMLToMarkdown\HtmlConverter;
 class Base implements SiteInterface
 {
     protected string $href;
+    protected IO $io;
 
-    public function __construct(string $href)
+    public function __construct(string $href, IO $io)
     {
         error_log("Making " . static::class);
         $this->href = $href;
+	$this->io   = $io;
     }
 
     public function contentToArticles(string $content): DOMElement
@@ -43,7 +45,7 @@ class Base implements SiteInterface
 	return $tmpDom;
     }
 
-    public function articleToString(DOMElement $article): string
+    public function articleToString(DOMElement $article): Pipe
     {
 	return pipe(
 	    $this->articleToDom(...),
@@ -53,13 +55,13 @@ class Base implements SiteInterface
 	)->with($article);
     }
 
-    public function domToMarkdown(DOMDocument $dom)
+    public function domToMarkdown(DOMDocument $dom): string
     {
         $converter = new HtmlConverter(['strip_tags' => true]);
 	return $converter->convert($tmpDom->saveHTML());
     }
 
-    public function show(): string
+    public function show(): Pipe
     {
 	return pipe(
 	    $this->getLink(...),

@@ -20,6 +20,13 @@ class Factory
         "reddit.com"         => Reddit::class
     ];
 
+    private IO $io;
+
+    public function __construct(IO $io)
+    {
+        $this->io = $io;
+    }
+
     public function abortAtPdf(string $href): string
     {
         if (ends_with($href, '.pdf')) {
@@ -47,9 +54,9 @@ class Factory
         $key  = $args[0];
         $href = $args[1];
         if (isset(self::$map[$key])) {
-            return new self::$map[$key]($href);
+            return new self::$map[$key]($href, $this->io);
         } else {
-            return new Unknown($href);
+            return new Unknown($href, $this->io);
         }
     }
 

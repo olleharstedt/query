@@ -6,8 +6,28 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Stackoverflow extends Base
 {
-    public function show(): string
+    public function processContent($content)
     {
+        $buffer = "";
+        $buffer .= "Got content\n";
+        $crawler = new Crawler($content);
+        $buffer .= "POSTCELL\n";
+        $rawText = $crawler->filter("div.postcell")->text('', false);
+        $buffer .= trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
+        $buffer .= "ANSWERCELLS\n";
+        $rawText = $crawler->filter("div.answercell")->text('', false);
+        $buffer .= trim(preg_replace('/^\s*$/m', ' ', $rawText)) . PHP_EOL;
+        return $buffer;
+    }
+
+    public function show(): Pipe
+    {
+        return pipe(
+            $this->getLink(...),
+            $this->io->fileGetContents(...),
+            $this->processContent(...)
+        );
+
         $buffer = "";
         $link = $this->getLink();
         $buffer .= "Fetching $link...\n";
