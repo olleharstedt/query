@@ -9,7 +9,7 @@ require __DIR__.'/../src/functions.query.php';
 
 /**
  * XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
- * XDEBUG_MODE=coverage php ./vendor/bin/phpunit --coverage-clover cov.xml tests
+ * XDEBUG_MODE=coverage php ./vendor/bin/phpunit --coverage-clover cov.xml
  */
 class KeyTest extends TestCase
 {
