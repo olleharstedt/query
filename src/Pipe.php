@@ -72,8 +72,10 @@ class Pipe
     {
         if (is_array($callable)) {
             return get_class($callable[0]) . '::' . $callable[1];
+        } elseif (is_callable($callable)) {
+            return $callable::class;
         } else {
-            throw new RuntimeException("Not implemented");
+            throw new RuntimeException("Not implemented: " . get_class($callable));
         }
     }
 }

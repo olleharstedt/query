@@ -5,7 +5,7 @@
 use Query\Factory;
 use Query\ErrorLogLogger;
 use Query\ParseHtml;
-use Query\IO;
+use Query\GetGoogleFromQuery;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
@@ -33,8 +33,8 @@ printf("query = %s\n", $query);
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
 //parseHtml(Query\getGoogleFromQuery($query), $opt);
-$parser = new ParseHtml(new Factory(new IO), $opt);
-$buffer = $parser->parse(Query\getGoogleFromQuery($query));
+$parser = new ParseHtml(new Factory(), $opt);
+$buffer = $parser->parse((new GetGoogleFromQuery())($query));
 echo $buffer;
 
 // $json coming from google api

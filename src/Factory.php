@@ -2,7 +2,7 @@
 
 namespace Query;
 
-use Exception;
+use InvalidArgumentException;
 
 /**
  * @psalm-immutable
@@ -32,7 +32,7 @@ final class Factory
     public function abortAtPdf(string $href): string
     {
         if (ends_with($href, '.pdf')) {
-            throw new Exception("Can't read PDF");
+            throw new InvalidArgumentException("Can't read PDF");
         }
         // Needed to make pipe work
         return $href;

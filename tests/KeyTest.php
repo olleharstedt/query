@@ -2,10 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 use Query\Factory;
-use Query\IO;
 
-require __DIR__.'/../vendor/autoload.php';
-require __DIR__.'/../src/functions.query.php';
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../src/functions.query.php';
 
 /**
  * XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
@@ -18,7 +17,6 @@ class KeyTest extends TestCase
      * @covers Query\Factory::abortAtPdf()
      * @covers Query\Factory::getKey()
      * @covers Query\Factory::makeThing()
-     * @covers Query\Factory::__construct()
      * @covers Query\Base::__construct()
      * @covers Query\Pipe::__construct()
      * @covers Query\Pipe::run()
@@ -29,8 +27,7 @@ class KeyTest extends TestCase
      */
     public function testKey()
     {
-        $io = $this->createStub(IO::class);
-        $f = new Factory($io);
+        $f = new Factory();
         $url = "/url?q=https://stackoverflow.com/rotmos&sa=U&ved=2ahUKEwi04--39PCBAxWhcfEDHdukDCoQFnoECAEQBA&usg=AOvVaw1-CR3wteujT38AIxfp5IFq";
         $res = $f
             ->make()

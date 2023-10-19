@@ -18,7 +18,7 @@ class Base implements SiteInterface
 
     public function __construct(string $href)
     {
-        error_log("Making " . static::class);
+        //error_log("Making " . static::class);
         $this->href = $href;
     }
 
