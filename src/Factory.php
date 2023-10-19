@@ -4,10 +4,15 @@ namespace Query;
 
 use Exception;
 
-class Factory
+/**
+ * @psalm-immutable
+ */
+final class Factory
 {
-    /** @var array */
-    public static $map = [
+    /**
+     * @var array<string, class-string>
+     */
+    const MAP = [
         "www.youtube.com"    => YouTube::class,
         "support.google.com" => Silent::class,
         "stackoverflow.com"  => Stackoverflow::class,
@@ -20,24 +25,22 @@ class Factory
         "reddit.com"         => Reddit::class
     ];
 
-    private IO $io;
-
-    public function __construct(IO $io)
-    {
-        $this->io = $io;
-    }
-
+    /**
+     * @psalm-mutation-free
+     * @todo More like a filter than a pipe process step
+     */
     public function abortAtPdf(string $href): string
     {
         if (ends_with($href, '.pdf')) {
-            error_log("Skipping PDF");
-            //return new Silent($href);
             throw new Exception("Can't read PDF");
         }
         // Needed to make pipe work
         return $href;
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function getKey(string $href): array
     {
         if (strpos($href, "/url?q") !== false) {
@@ -49,14 +52,17 @@ class Factory
         return [$key, $href];
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function makeThing(array $args): object
     {
         $key  = $args[0];
         $href = $args[1];
-        if (isset(self::$map[$key])) {
-            return new self::$map[$key]($href, $this->io);
+        if (isset(Factory::MAP[$key])) {
+            return new (Factory::MAP[$key])($href);
         } else {
-            return new Unknown($href, $this->io);
+            return new Unknown($href);
         }
     }
 
@@ -65,13 +71,10 @@ class Factory
      */
     public function make(): Pipe
     {
-        // PHP 7.2 friendly pipe
-        // TODO: Replace with (...) notation
-        return pipe(
-            [$this, "abortAtPdf"],
-            [$this, "getKey"],
-            [$this, "makeThing"]
+        return p(
+            $this->abortAtPdf(...),
+            $this->getKey(...),
+            $this->makeThing(...)
         );
     }
 }
-

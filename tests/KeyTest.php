@@ -24,13 +24,12 @@ class KeyTest extends TestCase
      * @covers Query\Pipe::run()
      * @covers Query\Pipe::with()
      * @covers Query\ends_with
-     * @covers Query\pipe
+     * @covers Query\p
      * @covers Query\get_domain
      */
     public function testKey()
     {
         $io = $this->createStub(IO::class);
-
         $f = new Factory($io);
         $url = "/url?q=https://stackoverflow.com/rotmos&sa=U&ved=2ahUKEwi04--39PCBAxWhcfEDHdukDCoQFnoECAEQBA&usg=AOvVaw1-CR3wteujT38AIxfp5IFq";
         $res = $f

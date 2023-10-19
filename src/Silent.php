@@ -7,7 +7,7 @@ class Silent extends Base
     public function show(): Pipe
     {
         // Do nothing.
-        return pipe();
+        return p();
     }
 }
 

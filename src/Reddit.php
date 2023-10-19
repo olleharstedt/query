@@ -9,7 +9,7 @@ class Reddit extends Base
 {
     public function show(): Pipe
     {
-        return pipe()->with("TODO");
+        return p()->with("TODO");
 
         $dom = $this->getDom();
         $siteTable = $dom->getElementById("siteTable");

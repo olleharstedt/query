@@ -5,7 +5,10 @@ namespace Query;
 use Exception;
 use RuntimeException;
 
-// @see https://stackoverflow.com/questions/16027102/get-domain-name-from-full-url
+/**
+ * @see https://stackoverflow.com/questions/16027102/get-domain-name-from-full-url
+ * @psalm-mutation-free
+ */
 function get_domain(string $url): string|bool
 {
     $pieces = parse_url($url);
@@ -20,18 +23,16 @@ function get_domain(string $url): string|bool
     return false;
 }
 
-// @see https://stackoverflow.com/questions/834303/startswith-and-endswith-functions-in-php
+/**
+ * @see https://stackoverflow.com/questions/834303/startswith-and-endswith-functions-in-php
+ * @psalm-mutation-free
+ */
 function ends_with(string $haystack, string $needle): bool {
     $length = strlen($needle);
     if(!$length) {
         return true;
     }
     return substr($haystack, -$length) === $needle;
-}
-
-function getGoogleFromQuery(string $query): string|false
-{
-    return file_get_contents("https://google.com/search?q=$query");
 }
 
 function getJsonFromApi(string $query, array $config): array
@@ -62,7 +63,7 @@ function getJsonFromApi(string $query, array $config): array
 /**
  * @psalm-mutation-free
  */
-function pipe(): Pipe
+function p(): Pipe
 {
     $args = func_get_args();
     return new Pipe($args);

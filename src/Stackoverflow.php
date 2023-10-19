@@ -22,9 +22,9 @@ class Stackoverflow extends Base
 
     public function show(): Pipe
     {
-        return pipe(
+        return p(
             $this->getLink(...),
-            $this->io->fileGetContents(...),
+            new FileGetContents(),
             $this->processContent(...)
         );
 

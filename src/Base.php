@@ -15,13 +15,11 @@ use League\HTMLToMarkdown\HtmlConverter;
 class Base implements SiteInterface
 {
     protected string $href;
-    protected IO $io;
 
-    public function __construct(string $href, IO $io)
+    public function __construct(string $href)
     {
         error_log("Making " . static::class);
         $this->href = $href;
-        $this->io   = $io;
     }
 
     public function contentToArticles(string $content): DOMNodeList
@@ -53,11 +51,11 @@ class Base implements SiteInterface
 
     public function articleToString(DOMElement $article): Pipe
     {
-        return pipe(
+        return p(
             $this->articleToDom(...),
             $this->domToMarkdown(...),
             (new FilePutContents('/tmp/tmp.md')),
-            (new RunPandoc('markdown', 'plain', '/tmp/tmp.md'))
+            (new RunPandoc())->from('markdown')->to('plain')->inputFile('/tmp/tmp.md')
         )->with($article);
     }
 
@@ -69,9 +67,9 @@ class Base implements SiteInterface
 
     public function show(): Pipe
     {
-        return pipe(
+        return p(
             $this->getLink(...),
-            $this->io->fileGetContents(...),
+            new FileGetContents(),
             $this->contentToArticles(...),
             $this->pickFirst(...),
             $this->articleToString(...)

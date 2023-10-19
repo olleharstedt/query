@@ -10,7 +10,7 @@ class Phpnet extends Base
 {
     public function show(): Pipe
     {
-        return pipe()->with("TODO");
+        return p()->with("TODO");
 
         $dom  = $this->getDom();
         $body = $dom->getElementById("layout-content");
