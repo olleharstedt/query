@@ -59,6 +59,15 @@ final class Factory
     {
         $key  = $args[0];
         $href = $args[1];
+
+        if (empty($key)) {
+            throw new InvalidArgumentException("No key");
+        }
+
+        if (empty($href)) {
+            throw new InvalidArgumentException("No href");
+        }
+
         if (isset(Factory::MAP[$key])) {
             return new (Factory::MAP[$key])($href);
         } else {

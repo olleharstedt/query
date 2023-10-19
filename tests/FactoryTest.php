@@ -13,15 +13,16 @@ require_once __DIR__.'/../src/functions.query.php';
  *
  * @covers Query\Base
  * @covers Query\Factory
+ * @covers Query\Pipe
  * @covers Query\ends_with
  * @covers Query\get_domain
+ * @covers Query\p
  */
 class FactoryTest extends TestCase
 {
     public function testAbort()
     {
         $this->expectException(InvalidArgumentException::class);
-
         $f = new Factory();
         $f->abortAtPdf('bla bla bla.pdf');
     }
@@ -56,5 +57,46 @@ class FactoryTest extends TestCase
         $f = new Factory();
         $res = $f->makeThing(['wikipedia.org', 'url']);
         $this->assertEquals($res::class, 'Query\Wikipedia');
+    }
+
+    public function testMakeUnknownThing()
+    {
+        $f = new Factory();
+        $res = $f->makeThing(['foobar.org', 'url']);
+        $this->assertEquals($res::class, 'Query\Unknown');
+    }
+
+    public function testMakeThingNoUrl()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $f = new Factory();
+        $res = $f->makeThing(['foobar.org', '']);
+    }
+
+    public function testMakeThingNoKey()
+    {
+        $f = new Factory();
+        $this->expectException(InvalidArgumentException::class);
+        $res = $f->makeThing(['', 'https://blabla']);
+    }
+
+    public function testMakeUnknown()
+    {
+        $f = new Factory();
+        $p = $f->make();
+        $res = $p
+            ->with("/url?q=https://www.getsafeonline.org/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
+            ->run();
+        $this->assertEquals($res::class, 'Query\Unknown');
+    }
+
+    public function testMakeStackoverflow()
+    {
+        $f = new Factory();
+        $p = $f->make();
+        $res = $p
+            ->with("/url?q=https://stackoverflow.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
+            ->run();
+        $this->assertEquals($res::class, 'Query\Stackoverflow');
     }
 }
