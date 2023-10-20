@@ -40,7 +40,6 @@ class Base implements SiteInterface
         return null;
     }
 
-    /** @psalm-mutation-free */
     public function articleToDom(DOMElement $article): DOMDocument
     {
         $tmpDom = new DOMDocument();
@@ -50,7 +49,6 @@ class Base implements SiteInterface
         return $tmpDom;
     }
 
-    /** @psalm-mutation-free */
     public function articleToString(DOMElement $article): Pipe
     {
         return p(
