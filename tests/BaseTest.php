@@ -104,4 +104,28 @@ class BaseTest extends TestCase
            ->run();
         $this->assertEquals('', $s);
     }
+
+    public function testDomToMarkdown()
+    {
+        $d = new DOMDocument();
+        $html = $d->createElement('html');
+        $p = $d->createElement('p');
+        $p->textContent = 'Bla bla';
+        $html->appendChild($p);
+        $d->appendChild($html);
+
+        $b = new Base('');
+        $md = $b->domToMarkdown($d);
+        $this->assertEquals('Bla bla', $md);
+    }
+
+    public function testShow()
+    {
+        $href = '/url?q=https://medium.com';
+        $b = new Base($href);
+        $result = $b
+            ->show()
+            ->replaceEffectWith('FileGetContents', '')
+            ->run();
+    }
 }

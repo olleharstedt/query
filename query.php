@@ -34,7 +34,8 @@ printf("query = %s\n", $query);
 //parseJson(getJsonFromApi($query, $config));
 //parseHtml(Query\getGoogleFromQuery($query), $opt);
 $parser = new ParseHtml(new Factory(), $opt);
-$buffer = $parser->parse((new GetGoogleFromQuery())($query));
+$content = (new GetGoogleFromQuery)($query);
+$buffer = $parser->parse($content);
 echo $buffer;
 
 // $json coming from google api

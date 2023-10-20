@@ -67,7 +67,11 @@ class Pipe
                 && isset($this->replaceEffectWith[$callable::class])) {
                 $arg = $this->replaceEffectWith[$callable::class];
             } else {
-                $arg = call_user_func($callable, $arg);
+                try {
+                    $arg = call_user_func($callable, $arg);
+                } catch (ReturnEarlyException $ex) {
+                    return $ex->payload;
+                }
             }
         }
         return $arg;
@@ -83,6 +87,15 @@ class Pipe
         }
     }
 
+    public static function abortIfEmpty(mixed $payload): mixed
+    {
+        if (empty($payload)) {
+            throw new ReturnEarlyException(null);
+        } else {
+            return $payload;
+        }
+    }
+
     /** @psalm-mutation-free */
     protected function callableToString(mixed $callable): string
     {
@@ -94,5 +107,4 @@ class Pipe
             throw new RuntimeException("Not implemented: " . get_class($callable));
         }
     }
-
 }

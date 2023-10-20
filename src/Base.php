@@ -72,6 +72,7 @@ class Base implements SiteInterface
             new FileGetContents(),
             $this->contentToArticles(...),
             $this->pickFirst(...),
+            Pipe::abortIfEmpty(...),
             $this->articleToString(...)
         );
 
