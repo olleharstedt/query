@@ -64,7 +64,7 @@ class Pipe
             //var_dump($callable instanceof Effect);
             //var_dump($callable::class);
             if ($callable instanceof Effect
-                && isset($this->replaceEffectWith[$callable::class])) {
+                && array_key_exists($callable::class, $this->replaceEffectWith)) {
                 $arg = $this->replaceEffectWith[$callable::class];
             } else {
                 try {

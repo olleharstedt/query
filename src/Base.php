@@ -22,6 +22,17 @@ class Base implements SiteInterface
         $this->href = $href;
     }
 
+    public function contentToDom(?string $content): ?DOMDocument
+    {
+        if (empty($content)) {
+            return null;
+        }
+
+        $dom = new DOMDocument();
+        @$dom->loadHTML($content);
+        return $dom;
+    }
+
     public function contentToArticles(string $content): ?DOMNodeList
     {
         if (empty($content)) {
@@ -34,6 +45,9 @@ class Base implements SiteInterface
 
     public function pickFirst(?iterable $things): mixed
     {
+        if (empty($things)) {
+            return null;
+        }
         foreach ($things as $_) {
             return $_;
         }
@@ -137,10 +151,19 @@ class Base implements SiteInterface
         return urldecode($parts[0]);
     }
 
+    public function getDom(): Pipe
+    {
+        return p(
+            $this->getLink(...),
+            new FileGetContents(),
+            $this->contentToDom(...)
+        );
+    }
+
+    /*
     public function getDom(): DOMDocument
     {
         $link = $this->getLink();
-        error_log("Fetching $link...");
         $content = file_get_contents($link);
         if (empty($content)) {
             throw new RuntimeException("Could not get content from link $link");
@@ -149,6 +172,7 @@ class Base implements SiteInterface
         @$dom->loadHTML($content);
         return $dom;
     }
+    */
 
     public function getTextFromNode(DOMNode $node): string
     {

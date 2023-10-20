@@ -169,4 +169,44 @@ class BaseTest extends TestCase
         $link = $b->getLink();
         $this->assertEmpty($link);
     }
+
+    public function testGetDom()
+    {
+        $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
+        $b = new Base($href);
+        $content = <<<HTML
+            <html>
+          <body>
+            <p>Some content</p>
+          </body>
+        </html>
+        HTML;
+
+        $result = $b
+            ->getDom()
+            ->replaceEffectWith('Query\FileGetContents', $content)
+            ->runAll();
+
+        $d = new DOMDocument();
+        $html = $d->createElement('html');
+        $body = $d->createElement('body');
+        $p = $d->createElement('p');
+        $p->textContent = 'Some content';
+        $body->appendChild($p);
+        $html->appendChild($body);
+        $d->appendChild($html);
+
+        $this->assertEquals($d, $result);
+    }
+
+    public function testGetDomEmpty()
+    {
+        $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
+        $b = new Base($href);
+        $result = $b
+            ->getDom()
+            ->replaceEffectWith('Query\FileGetContents', null)
+            ->runAll();
+        $this->assertEquals('', $result);
+    }
 }
