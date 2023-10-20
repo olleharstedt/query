@@ -12,6 +12,10 @@ require_once __DIR__.'/../src/functions.query.php';
  * php tests/check_coverage.php cov.xml 80
  *
  * @covers Query\Base
+ * @covers Query\FilePutContents
+ * @covers Query\Pipe
+ * @covers Query\RunPandoc
+ * @covers Query\p
  */
 class BaseTest extends TestCase
 {

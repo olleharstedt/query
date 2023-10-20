@@ -77,6 +77,7 @@ class Base implements SiteInterface
             $this->articleToString(...)
         );
 
+        /*
         $buffer = "";
         $link = $this->getLink();
         $buffer .= "Fetching $link...\n";
@@ -124,6 +125,7 @@ class Base implements SiteInterface
         }
         $buffer .= "DONE\n";
         return $buffer;
+         */
     }
 
     public function getLink(): string
