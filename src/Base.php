@@ -22,17 +22,17 @@ class Base implements SiteInterface
         $this->href = $href;
     }
 
-    public function contentToArticles(string $content): DOMNodeList
+    public function contentToArticles(string $content): ?DOMNodeList
     {
         if (empty($content)) {
-            throw new InvalidArgumentException("Content can't be empty");
+            return null;
         }
         $dom = new DOMDocument();
         @$dom->loadHTML($content);
         return $dom->getElementsByTagName("article");
     }
 
-    public function pickFirst(iterable $things): mixed
+    public function pickFirst(?iterable $things): mixed
     {
         foreach ($things as $_) {
             return $_;

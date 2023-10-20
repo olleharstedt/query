@@ -81,6 +81,7 @@ class Pipe
     {
         $arg = $this->run();
         if ($arg instanceof Pipe) {
+            $arg->replaceEffectWith = array_merge($this->replaceEffectWith, $arg->replaceEffectWith);
             return $arg->runAll();
         } else {
             return $arg;

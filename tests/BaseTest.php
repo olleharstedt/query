@@ -16,6 +16,7 @@ require_once __DIR__.'/../src/functions.query.php';
  * @covers Query\Pipe
  * @covers Query\RunPandoc
  * @covers Query\p
+ * @covers Query\ReturnEarlyException
  */
 class BaseTest extends TestCase
 {
@@ -119,13 +120,53 @@ class BaseTest extends TestCase
         $this->assertEquals('Bla bla', $md);
     }
 
-    public function testShow()
+    public function testShowNull()
     {
         $href = '/url?q=https://medium.com';
         $b = new Base($href);
         $result = $b
             ->show()
-            ->replaceEffectWith('FileGetContents', '')
-            ->run();
+            ->replaceEffectWith('Query\FileGetContents', 'bla bla bla')
+            ->runAll();
+        $this->assertNull($result);
+    }
+
+    public function testShowBasic()
+    {
+        $href = '/url?q=https://medium.com';
+        $content = <<<HTML
+            <html>
+            <head></head>
+            <body>
+            <article>
+            <p>Some article</p>
+            </article>
+            </body>
+            </html>
+        HTML;
+        $b = new Base($href);
+        $result = $b
+            ->show()
+            ->replaceEffectWith('Query\FileGetContents', $content)
+            ->replaceEffectWith('Query\FilePutContents', '')
+            ->replaceEffectWith('Query\RunPandoc', 'Some article')
+            ->runAll();
+        $this->assertEquals('Some article', $result);
+    }
+
+    public function testGetLink()
+    {
+        $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
+        $b = new Base($href);
+        $link = $b->getLink();
+        $this->assertEquals('https://medium.com/checkawebsite/', $link);
+    }
+
+    public function testGetLinkEmpty()
+    {
+        $href = '';
+        $b = new Base($href);
+        $link = $b->getLink();
+        $this->assertEmpty($link);
     }
 }
