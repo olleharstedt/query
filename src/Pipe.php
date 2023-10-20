@@ -12,6 +12,7 @@ class Pipe
 {
     private array $callables;
     private mixed $start;
+    private array $replaceEffectWith = [];
 
     /** @var ?LoggerInterface */
     private $logger;
@@ -39,6 +40,14 @@ class Pipe
         return $clone;
     }
 
+    /** @psalm-mutation-free */
+    public function replaceEffectWith(string $effectName, mixed $result): static
+    {
+        $c = clone $this;
+        $c->replaceEffectWith[$effectName] = $result;
+        return $c;
+    }
+
     public function run(): mixed
     {
         $arg = $this->start ?? null;
@@ -52,7 +61,14 @@ class Pipe
                         . json_encode($arg)
                     );
             }
-            $arg = call_user_func($callable, $arg);
+            //var_dump($callable instanceof Effect);
+            //var_dump($callable::class);
+            if ($callable instanceof Effect
+                && isset($this->replaceEffectWith[$callable::class])) {
+                $arg = $this->replaceEffectWith[$callable::class];
+            } else {
+                $arg = call_user_func($callable, $arg);
+            }
         }
         return $arg;
     }
@@ -78,4 +94,5 @@ class Pipe
             throw new RuntimeException("Not implemented: " . get_class($callable));
         }
     }
+
 }
