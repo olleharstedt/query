@@ -67,9 +67,11 @@ class ParseHtml
                 ->setCache($this->cache)
                 ->run();
             $this->k++;
-            //error_log(get_class($t));
+            error_log(get_class($t));
             $showPipe = $t->show($href);
-            //error_log(get_class($showPipe));
+            $showPipe->setCache($this->cache);
+            $showPipe->setLogger($this->logger);
+            error_log(get_class($showPipe));
             return $showPipe->runAll();
         } else {
             //error_log("return 2");

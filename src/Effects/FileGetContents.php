@@ -8,6 +8,7 @@ class FileGetContents implements Read
 {
     public function __invoke(mixed $file): string|false
     {
+        error_log("FileGetContents");
         if (!is_string($file)) {
             throw new InvalidArgumentException("Expected string");
         }

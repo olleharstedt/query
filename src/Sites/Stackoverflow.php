@@ -6,6 +6,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Query\Pipe;
 use function Query\p;
 use Query\Effects\FileGetContents;
+use Query\Effects\CacheResult;
 
 class Stackoverflow extends Base
 {
@@ -28,6 +29,8 @@ class Stackoverflow extends Base
         return p(
             $this->getLink(...),
             new FileGetContents(),
+            // TODO: FileGetContents doesn't know cache key :(
+            new CacheResult('Stackoverflow::show' . $href),
             $this->processContent(...)
         )->with($href);
 

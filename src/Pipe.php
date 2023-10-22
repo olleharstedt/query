@@ -85,7 +85,7 @@ class Pipe
                     ->logger
                     ->debug(
                         $this->callableToString($callable) . ' - '
-                        . json_encode($arg)
+                        . substr(json_encode($arg), 0, 200)
                     );
             }
             try {
@@ -109,8 +109,10 @@ class Pipe
                         throw new RuntimeException("Cannot cache with non-string key");
                     }
                     error_log("Using cache for key " . $arg);
+                    // TODO: Cache key is wrong here
                     $cachedArg = $this->cache->get(hash('md5', $arg));
                     if ($cachedArg === null) {
+                        error_log("Found no cached content");
                         $arg = call_user_func($callable, $arg);
                     } else {
                         $arg = $cachedArg;
@@ -131,10 +133,12 @@ class Pipe
      */
     public function runAll(): mixed
     {
+        error_log("runAll");
         $arg = $this->run();
         if ($arg instanceof Pipe) {
+            error_log("Setting up child pipe");
             $arg->replaceEffectWith = array_merge($this->replaceEffectWith, $arg->replaceEffectWith);
-            $arg->cache = $this->cache;
+            $arg->cache  = $this->cache;
             $arg->logger = $this->logger;
             return $arg->runAll();
         } else {
