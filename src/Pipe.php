@@ -13,6 +13,8 @@ class Pipe
     private array $callables;
     private mixed $start;
     private array $replaceEffectWith = [];
+    private array $replaceReadWith   = [];
+    private array $replaceWriteWith  = [];
 
     /** @var ?LoggerInterface */
     private $logger;
@@ -48,6 +50,18 @@ class Pipe
         return $c;
     }
 
+    public function replaceWriteWith(mixed $result): static
+    {
+        $this->replaceWriteWith[] = $result;
+        return $this;
+    }
+
+    public function replaceReadWith(mixed $result): static
+    {
+        $this->replaceReadWith[] = $result;
+        return $this;
+    }
+
     public function run(): mixed
     {
         $arg = $this->start ?? null;
@@ -63,9 +77,16 @@ class Pipe
             }
             //var_dump($callable instanceof Effect);
             //var_dump($callable::class);
+
             if ($callable instanceof Effect
                 && array_key_exists($callable::class, $this->replaceEffectWith)) {
                 $arg = $this->replaceEffectWith[$callable::class];
+            } elseif ($callable instanceof Read
+                      && count($this->replaceReadWith) > 0) {
+                $arg = array_shift($this->replaceReadWith);
+            } elseif ($callable instanceof Write
+                      && count($this->replaceWriteWith) > 0) {
+                $arg = array_shift($this->replaceWriteWith);
             } else {
                 try {
                     $arg = call_user_func($callable, $arg);

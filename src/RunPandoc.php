@@ -2,7 +2,7 @@
 
 namespace Query;
 
-class RunPandoc implements Effect
+class RunPandoc implements Read
 {
     private ?string $from;
     private ?string $to;

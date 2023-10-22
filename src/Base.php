@@ -174,18 +174,28 @@ class Base implements SiteInterface
     }
     */
 
-    public function getTextFromNode(DOMNode $node): string
+    public function nodeToDOM(DOMNode $node): DOMDocument
     {
-        $tmpDom = new DOMDocument();
-        $root = $tmpDom->createElement('html');
-        $root = $tmpDom->appendChild($root);
-        $root->appendChild($tmpDom->importNode($node, true));
-        $result = file_put_contents("/tmp/queryresult.html", $tmpDom->saveHTML());
-        if ($result === false) {
-            throw new Exception("Could not write to /tmp file");
-        }
-        $output = '';
-        exec("pandoc --from html --to plain /tmp/queryresult.html", $output);
-        return implode("\n", $output);
+        $dom = new DOMDocument();
+        $root = $dom->createElement('html');
+        $root = $dom->appendChild($root);
+        $root->appendChild($dom->importNode($node, true));
+        return $dom;
+    }
+
+    public function DOMToHtml(DOMDocument $dom): string
+    {
+        return $dom->saveHTML();
+    }
+
+    public function getTextFromNode(DOMNode $node): Pipe
+    {
+        $tmpFile = '/tmp/queryresult.html';
+        return p(
+            $this->nodeToDOM(...),
+            $this->DOMToHtml(...),
+            new FilePutContents($tmpFile),
+            (new RunPandoc())->from('html')->to('plain')->inputFile($tmpFile)
+        );
     }
 }

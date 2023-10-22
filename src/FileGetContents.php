@@ -2,7 +2,7 @@
 
 namespace Query;
 
-class FileGetContents implements Effect
+class FileGetContents implements Read
 {
     public function __invoke(string $file): string|false
     {

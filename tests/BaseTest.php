@@ -126,7 +126,7 @@ class BaseTest extends TestCase
         $b = new Base($href);
         $result = $b
             ->show()
-            ->replaceEffectWith('Query\FileGetContents', 'bla bla bla')
+            ->replaceReadWith('bla bla bla')
             ->runAll();
         $this->assertNull($result);
     }
@@ -184,7 +184,7 @@ class BaseTest extends TestCase
 
         $result = $b
             ->getDom()
-            ->replaceEffectWith('Query\FileGetContents', $content)
+            ->replaceReadWith($content)
             ->runAll();
 
         $d = new DOMDocument();
@@ -205,7 +205,7 @@ class BaseTest extends TestCase
         $b = new Base($href);
         $result = $b
             ->getDom()
-            ->replaceEffectWith('Query\FileGetContents', null)
+            ->replaceReadWith(null)
             ->runAll();
         $this->assertEquals('', $result);
     }

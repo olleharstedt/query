@@ -2,7 +2,7 @@
 
 namespace Query;
 
-class FilePutContents implements Effect
+class FilePutContents implements Write
 {
     private string $file;
     public function __construct(string $file)
