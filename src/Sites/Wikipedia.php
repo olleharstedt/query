@@ -5,6 +5,8 @@ namespace Query\Sites;
 use DOMDocument;
 use League\HTMLToMarkdown\HtmlConverter;
 use RuntimeException;
+use Query\Pipe;
+use function Query\p;
 
 class Wikipedia extends Base
 {

@@ -3,6 +3,9 @@
 namespace Query\Sites;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Query\Pipe;
+use function Query\p;
+use Query\Effects\FileGetContents;
 
 class Stackoverflow extends Base
 {

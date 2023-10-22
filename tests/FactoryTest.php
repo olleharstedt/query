@@ -56,14 +56,14 @@ class FactoryTest extends TestCase
     {
         $f = new Factory();
         $res = $f->makeThing(['wikipedia.org', 'url']);
-        $this->assertEquals($res::class, 'Query\Wikipedia');
+        $this->assertEquals($res::class, 'Query\Sites\Wikipedia');
     }
 
     public function testMakeUnknownThing(): void
     {
         $f = new Factory();
         $res = $f->makeThing(['foobar.org', 'url']);
-        $this->assertEquals($res::class, 'Query\Unknown');
+        $this->assertEquals($res::class, 'Query\Sites\Unknown');
     }
 
     public function testMakeThingNoUrl(): void
@@ -87,7 +87,7 @@ class FactoryTest extends TestCase
         $res = $p
             ->with("/url?q=https://www.getsafeonline.org/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
             ->run();
-        $this->assertEquals($res::class, 'Query\Unknown');
+        $this->assertEquals($res::class, 'Query\Sites\Unknown');
     }
 
     public function testMakeStackoverflow(): void
@@ -97,6 +97,6 @@ class FactoryTest extends TestCase
         $res = $p
             ->with("/url?q=https://stackoverflow.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
             ->run();
-        $this->assertEquals($res::class, 'Query\Stackoverflow');
+        $this->assertEquals($res::class, 'Query\Sites\Stackoverflow');
     }
 }

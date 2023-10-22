@@ -32,6 +32,6 @@ class KeyTest extends TestCase
             ->make()
             ->with($url)
             ->run();
-        $this->assertEquals(get_class($res), "Query\Stackoverflow");
+        $this->assertEquals(get_class($res), "Query\Sites\Stackoverflow");
     }
 }

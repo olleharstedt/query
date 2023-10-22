@@ -4,6 +4,8 @@ namespace Query\Sites;
 
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
+use Query\Pipe;
+use function Query\p;
 
 class Reddit extends Base
 {

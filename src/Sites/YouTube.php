@@ -2,7 +2,8 @@
 
 namespace Query\Sites;
 
-use Query\p;
+use Query\Pipe;
+use function Query\p;
 
 class YouTube extends Base
 {

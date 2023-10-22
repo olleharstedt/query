@@ -3,6 +3,12 @@
 namespace Query;
 
 use InvalidArgumentException;
+use Query\Pipe;
+use function Query\p;
+use Query\Effects\FileGetContents;
+use Query\Effects\FilePutContents;
+use Query\Effects\RunPandoc;
+use Query\Sites\Unknown;
 
 /**
  * @psalm-immutable
@@ -13,16 +19,16 @@ final class Factory
      * @var array<string, class-string>
      */
     const MAP = [
-        "www.youtube.com"    => YouTube::class,
-        "support.google.com" => Silent::class,
-        "stackoverflow.com"  => Stackoverflow::class,
-        "wikipedia.org"      => Wikipedia::class,
-        "en.wikipedia.org"   => Wikipedia::class,
-        "google.com"         => Silent::class,
-        "www.php.net"        => Phpnet::class,
-        "php.net"            => Phpnet::class,
-        "www.reddit.com"     => Reddit::class,
-        "reddit.com"         => Reddit::class
+        "www.youtube.com"    => Sites\YouTube::class,
+        "support.google.com" => Sites\Silent::class,
+        "stackoverflow.com"  => Sites\Stackoverflow::class,
+        "wikipedia.org"      => Sites\Wikipedia::class,
+        "en.wikipedia.org"   => Sites\Wikipedia::class,
+        "google.com"         => Sites\Silent::class,
+        "www.php.net"        => Sites\Phpnet::class,
+        "php.net"            => Sites\Phpnet::class,
+        "www.reddit.com"     => Sites\Reddit::class,
+        "reddit.com"         => Sites\Reddit::class
     ];
 
     /**

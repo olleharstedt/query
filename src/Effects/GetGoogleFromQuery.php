@@ -1,8 +1,8 @@
 <?php
 
-namespace Query;
+namespace Query\Effects;
 
-class GetGoogleFromQuery implements Effect
+class GetGoogleFromQuery implements Read
 {
     public function __invoke(string $query): string|false
     {

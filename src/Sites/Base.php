@@ -12,6 +12,10 @@ use InvalidArgumentException;
 use Traversable;
 use League\HTMLToMarkdown\HtmlConverter;
 use Query\Pipe;
+use function Query\p;
+use Query\Effects\FileGetContents;
+use Query\Effects\FilePutContents;
+use Query\Effects\RunPandoc;
 
 class Base implements SiteInterface
 {

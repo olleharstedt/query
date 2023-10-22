@@ -3,6 +3,9 @@
 namespace Query;
 
 use RuntimeException;
+use Query\Effects\Effect;
+use Query\Effects\Write;
+use Query\Effects\Read;
 
 /**
  * TODO: Add support for filter? Filter at start or filter each step?
