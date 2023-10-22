@@ -17,7 +17,6 @@ class KeyTest extends TestCase
      * @covers Query\Factory::abortAtPdf()
      * @covers Query\Factory::getKey()
      * @covers Query\Factory::makeThing()
-     * @covers Query\Base::__construct()
      * @covers Query\Pipe::__construct()
      * @covers Query\Pipe::run()
      * @covers Query\Pipe::with()
@@ -25,7 +24,7 @@ class KeyTest extends TestCase
      * @covers Query\p
      * @covers Query\get_domain
      */
-    public function testKey()
+    public function testKey(): void
     {
         $f = new Factory();
         $url = "/url?q=https://stackoverflow.com/rotmos&sa=U&ved=2ahUKEwi04--39PCBAxWhcfEDHdukDCoQFnoECAEQBA&usg=AOvVaw1-CR3wteujT38AIxfp5IFq";

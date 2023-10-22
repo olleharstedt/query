@@ -20,21 +20,21 @@ require_once __DIR__.'/../src/functions.query.php';
  */
 class FactoryTest extends TestCase
 {
-    public function testAbort()
+    public function testAbort(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $f = new Factory();
         $f->abortAtPdf('bla bla bla.pdf');
     }
 
-    public function testNotAbort()
+    public function testNotAbort(): void
     {
         $f = new Factory();
         $res = $f->abortAtPdf('bla bla bla.pd');
         $this->assertEquals($res, 'bla bla bla.pd');
     }
 
-    public function testGetKey()
+    public function testGetKey(): void
     {
         $f = new Factory();
         $string = "/url?q=https://www.youtube.com/watch%3Fv%3DhWMMBku1oKo&sa=U&ved=2ahUKEwjGvO2d04KCAxXfSfEDHbQGA58QtwJ6BAgEEAE&usg=AOvVaw3I1KOljH1SIx__GsC9_-Hx";
@@ -43,7 +43,7 @@ class FactoryTest extends TestCase
         $this->assertEquals($res[0], 'youtube.com');
     }
 
-    public function testGetNoKey()
+    public function testGetNoKey(): void
     {
         $f = new Factory();
         $string = "";
@@ -52,35 +52,35 @@ class FactoryTest extends TestCase
         $this->assertEquals($res[0], null);
     }
 
-    public function testMakeThing()
+    public function testMakeThing(): void
     {
         $f = new Factory();
         $res = $f->makeThing(['wikipedia.org', 'url']);
         $this->assertEquals($res::class, 'Query\Wikipedia');
     }
 
-    public function testMakeUnknownThing()
+    public function testMakeUnknownThing(): void
     {
         $f = new Factory();
         $res = $f->makeThing(['foobar.org', 'url']);
         $this->assertEquals($res::class, 'Query\Unknown');
     }
 
-    public function testMakeThingNoUrl()
+    public function testMakeThingNoUrl(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $f = new Factory();
         $res = $f->makeThing(['foobar.org', '']);
     }
 
-    public function testMakeThingNoKey()
+    public function testMakeThingNoKey(): void
     {
         $f = new Factory();
         $this->expectException(InvalidArgumentException::class);
         $res = $f->makeThing(['', 'https://blabla']);
     }
 
-    public function testMakeUnknown()
+    public function testMakeUnknown(): void
     {
         $f = new Factory();
         $p = $f->make();
@@ -90,7 +90,7 @@ class FactoryTest extends TestCase
         $this->assertEquals($res::class, 'Query\Unknown');
     }
 
-    public function testMakeStackoverflow()
+    public function testMakeStackoverflow(): void
     {
         $f = new Factory();
         $p = $f->make();

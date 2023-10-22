@@ -7,7 +7,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 class PhpnetCodeTest extends TestCase
 {
-    public function testGetoptExample()
+    public function testGetoptExample(): void
     {
         $this->markTestSkipped();
 

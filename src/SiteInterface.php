@@ -4,5 +4,5 @@ namespace Query;
 
 interface SiteInterface
 {
-    public function show(): Pipe;
+    public function show(string $href): Pipe;
 }

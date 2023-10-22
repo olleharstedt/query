@@ -7,7 +7,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Reddit extends Base
 {
-    public function show(): Pipe
+    public function show(string $href): Pipe
     {
         return p()->with("TODO");
 
@@ -31,9 +31,9 @@ class Reddit extends Base
         return $buffer;
     }
 
-    public function getLink(): string
+    public function getLink(string $href): string
     {
-        $href = parent::getLink();
+        $href = parent::getLink($href);
         return str_replace('www.reddit.com', 'old.reddit.com', $href);
     }
 }

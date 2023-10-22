@@ -4,7 +4,7 @@ namespace Query;
 
 class YouTube extends Base
 {
-    public function show(): Pipe
+    public function show(string $href): Pipe
     {
         return p()->with("Can't show youtube");
 

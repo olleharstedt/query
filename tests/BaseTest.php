@@ -20,10 +20,10 @@ require_once __DIR__.'/../src/functions.query.php';
  */
 class BaseTest extends TestCase
 {
-    public function testContentToArticles()
+    public function testContentToArticles(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $b = new Base($href);
+        $b = new Base();
         $content = <<<HTML
             <html>
             <head></head>
@@ -34,14 +34,14 @@ class BaseTest extends TestCase
             </body>
             </html>
         HTML;
-        $c = $b->contentToArticles($content);
+        $c = $b->contentToArticles($content) ?? [];
         $this->assertCount(1, $c);
     }
 
-    public function testContentToTwoArticles()
+    public function testContentToTwoArticles(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $b = new Base($href);
+        $b = new Base();
         $content = <<<HTML
             <html>
             <head></head>
@@ -55,14 +55,14 @@ class BaseTest extends TestCase
             </body>
             </html>
         HTML;
-        $c = $b->contentToArticles($content);
+        $c = $b->contentToArticles($content) ?? [];
         $this->assertCount(2, $c);
     }
 
-    public function testContentToNoArticles()
+    public function testContentToNoArticles(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $b = new Base($href);
+        $b = new Base();
         $content = <<<HTML
             <html>
             <head></head>
@@ -70,23 +70,23 @@ class BaseTest extends TestCase
             </body>
             </html>
         HTML;
-        $c = $b->contentToArticles($content);
+        $c = $b->contentToArticles($content) ?? [1, 2, 3];
         $this->assertCount(0, $c);
     }
 
-    public function testPickFirst()
+    public function testPickFirst(): void
     {
         $href = '/url?q=https://medium.com';
-        $b = new Base($href);
+        $b = new Base();
         $c = $b->pickFirst([1, 2, 3]);
         $this->assertEquals(1, $c);
     }
 
-    public function testArticleToString()
+    public function testArticleToString(): void
     {
         $href = '/url?q=https://medium.com';
         $d = new DOMElement('article');
-        $b = new Base($href);
+        $b = new Base();
         $s = $b->articleToString($d)
            ->replaceEffectWith('Query\FilePutContents', '')
            ->replaceEffectWith('Query\RunPandoc', 'some content')
@@ -94,11 +94,11 @@ class BaseTest extends TestCase
         $this->assertEquals('some content', $s);
     }
 
-    public function testArticleToStringEmpty()
+    public function testArticleToStringEmpty(): void
     {
         $href = '/url?q=https://medium.com';
         $d = new DOMElement('article');
-        $b = new Base($href);
+        $b = new Base();
         $s = $b->articleToString($d)
            ->replaceEffectWith('Query\FilePutContents', '')
            ->replaceEffectWith('Query\RunPandoc', '')
@@ -106,7 +106,7 @@ class BaseTest extends TestCase
         $this->assertEquals('', $s);
     }
 
-    public function testDomToMarkdown()
+    public function testDomToMarkdown(): void
     {
         $d = new DOMDocument();
         $html = $d->createElement('html');
@@ -115,23 +115,23 @@ class BaseTest extends TestCase
         $html->appendChild($p);
         $d->appendChild($html);
 
-        $b = new Base('');
+        $b = new Base();
         $md = $b->domToMarkdown($d);
         $this->assertEquals('Bla bla', $md);
     }
 
-    public function testShowNull()
+    public function testShowNull(): void
     {
         $href = '/url?q=https://medium.com';
-        $b = new Base($href);
+        $b = new Base();
         $result = $b
-            ->show()
+            ->show($href)
             ->replaceReadWith('bla bla bla')
             ->runAll();
         $this->assertNull($result);
     }
 
-    public function testShowBasic()
+    public function testShowBasic(): void
     {
         $href = '/url?q=https://medium.com';
         $content = <<<HTML
@@ -144,9 +144,9 @@ class BaseTest extends TestCase
             </body>
             </html>
         HTML;
-        $b = new Base($href);
+        $b = new Base();
         $result = $b
-            ->show()
+            ->show($href)
             ->replaceEffectWith('Query\FileGetContents', $content)
             ->replaceEffectWith('Query\FilePutContents', '')
             ->replaceEffectWith('Query\RunPandoc', 'Some article')
@@ -154,26 +154,26 @@ class BaseTest extends TestCase
         $this->assertEquals('Some article', $result);
     }
 
-    public function testGetLink()
+    public function testGetLink(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $b = new Base($href);
-        $link = $b->getLink();
+        $b = new Base();
+        $link = $b->getLink($href);
         $this->assertEquals('https://medium.com/checkawebsite/', $link);
     }
 
-    public function testGetLinkEmpty()
+    public function testGetLinkEmpty(): void
     {
         $href = '';
-        $b = new Base($href);
-        $link = $b->getLink();
+        $b = new Base();
+        $link = $b->getLink($href);
         $this->assertEmpty($link);
     }
 
-    public function testGetDom()
+    public function testGetDom(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $b = new Base($href);
+        $b = new Base();
         $content = <<<HTML
             <html>
           <body>
@@ -183,7 +183,7 @@ class BaseTest extends TestCase
         HTML;
 
         $result = $b
-            ->getDom()
+            ->getDom($href)
             ->replaceReadWith($content)
             ->runAll();
 
@@ -199,14 +199,23 @@ class BaseTest extends TestCase
         $this->assertEquals($d, $result);
     }
 
-    public function testGetDomEmpty()
+    public function testGetDomEmpty(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $b = new Base($href);
+        $b = new Base();
         $result = $b
-            ->getDom()
+            ->getDom($href)
             ->replaceReadWith(null)
             ->runAll();
         $this->assertEquals('', $result);
     }
+
+    /*
+    public function testNodeToDOM(): void
+    {
+        $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
+        $d = new DOMNode();
+        $b = new Base();
+    }
+    */
 }

@@ -14,14 +14,6 @@ use League\HTMLToMarkdown\HtmlConverter;
 
 class Base implements SiteInterface
 {
-    protected string $href;
-
-    public function __construct(string $href)
-    {
-        //error_log("Making " . static::class);
-        $this->href = $href;
-    }
-
     public function contentToDom(?string $content): ?DOMDocument
     {
         if (empty($content)) {
@@ -79,7 +71,7 @@ class Base implements SiteInterface
         return $converter->convert($dom->saveHTML());
     }
 
-    public function show(): Pipe
+    public function show(string $href): Pipe
     {
         return p(
             $this->getLink(...),
@@ -88,7 +80,7 @@ class Base implements SiteInterface
             $this->pickFirst(...),
             Pipe::abortIfEmpty(...),
             $this->articleToString(...)
-        );
+        )->with($href);
 
         /*
         $buffer = "";
@@ -141,23 +133,23 @@ class Base implements SiteInterface
          */
     }
 
-    public function getLink(): string
+    public function getLink(string $href): string
     {
-        $parts = explode("=", $this->href);
+        $parts = explode("=", $href);
         if (count($parts) === 1) {
-            return $this->href;
+            return $href;
         }
         $parts = explode("&", $parts[1]);
         return urldecode($parts[0]);
     }
 
-    public function getDom(): Pipe
+    public function getDom(string $href): Pipe
     {
         return p(
             $this->getLink(...),
             new FileGetContents(),
             $this->contentToDom(...)
-        );
+        )->with($href);
     }
 
     /*

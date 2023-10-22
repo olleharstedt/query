@@ -69,9 +69,9 @@ final class Factory
         }
 
         if (isset(Factory::MAP[$key])) {
-            return new (Factory::MAP[$key])($href);
+            return new (Factory::MAP[$key])();
         } else {
-            return new Unknown($href);
+            return new Unknown();
         }
     }
 

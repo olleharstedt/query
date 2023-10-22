@@ -23,9 +23,11 @@ $metrics         = $xml->xpath('//metrics');
 $totalElements   = 0;
 $checkedElements = 0;
 
-foreach ($metrics as $metric) {
-    $totalElements   += (int) $metric['elements'];
-    $checkedElements += (int) $metric['coveredelements'];
+if ($metrics) {
+    foreach ($metrics as $metric) {
+        $totalElements   += (int) $metric['elements'];
+        $checkedElements += (int) $metric['coveredelements'];
+    }
 }
 
 $coverage = ($checkedElements / $totalElements) * 100;

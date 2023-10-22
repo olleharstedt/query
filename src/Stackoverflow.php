@@ -20,13 +20,13 @@ class Stackoverflow extends Base
         return $buffer;
     }
 
-    public function show(): Pipe
+    public function show(string $href): Pipe
     {
         return p(
             $this->getLink(...),
             new FileGetContents(),
             $this->processContent(...)
-        );
+        )->with($href);
 
         $buffer = "";
         $link = $this->getLink();

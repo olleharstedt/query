@@ -8,7 +8,7 @@ use RuntimeException;
 
 class Wikipedia extends Base
 {
-    public function show(): Pipe
+    public function show(string $href): Pipe
     {
         return p()->with("TODO");
 
