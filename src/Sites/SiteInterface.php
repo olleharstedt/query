@@ -1,6 +1,6 @@
 <?php
 
-namespace Query;
+namespace Query\Sites;
 
 interface SiteInterface
 {

@@ -1,6 +1,8 @@
 <?php
 
-namespace Query;
+namespace Query\Sites;
+
+use Query\p;
 
 class YouTube extends Base
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Query;
+namespace Query\Sites;
 
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;

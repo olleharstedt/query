@@ -1,6 +1,6 @@
 <?php
 
-namespace Query;
+namespace Query\Sites;
 
 use DOMDocument;
 use League\HTMLToMarkdown\HtmlConverter;

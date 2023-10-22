@@ -1,6 +1,6 @@
 <?php
 
-namespace Query;
+namespace Query\Effects;
 
 interface Read extends Effect
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Query;
+namespace Query\Sites;
 
 use DOMDocument;
 use DOMNode;
@@ -11,6 +11,7 @@ use RuntimeException;
 use InvalidArgumentException;
 use Traversable;
 use League\HTMLToMarkdown\HtmlConverter;
+use Query\Pipe;
 
 class Base implements SiteInterface
 {

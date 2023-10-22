@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Query\Base;
+use Query\Sites\Base;
 
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/../src/functions.query.php';
