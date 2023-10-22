@@ -88,8 +88,8 @@ class BaseTest extends TestCase
         $d = new DOMElement('article');
         $b = new Base();
         $s = $b->articleToString($d)
-           ->replaceEffectWith('Query\FilePutContents', '')
-           ->replaceEffectWith('Query\RunPandoc', 'some content')
+           ->replaceEffectWith('Query\Effects\FilePutContents', '')
+           ->replaceEffectWith('Query\Effects\RunPandoc', 'some content')
            ->run();
         $this->assertEquals('some content', $s);
     }
@@ -100,8 +100,8 @@ class BaseTest extends TestCase
         $d = new DOMElement('article');
         $b = new Base();
         $s = $b->articleToString($d)
-           ->replaceEffectWith('Query\FilePutContents', '')
-           ->replaceEffectWith('Query\RunPandoc', '')
+           ->replaceEffectWith('Query\Effects\FilePutContents', '')
+           ->replaceEffectWith('Query\Effects\RunPandoc', '')
            ->run();
         $this->assertEquals('', $s);
     }
@@ -147,9 +147,9 @@ class BaseTest extends TestCase
         $b = new Base();
         $result = $b
             ->show($href)
-            ->replaceEffectWith('Query\FileGetContents', $content)
-            ->replaceEffectWith('Query\FilePutContents', '')
-            ->replaceEffectWith('Query\RunPandoc', 'Some article')
+            ->replaceEffectWith('Query\Effects\FileGetContents', $content)
+            ->replaceEffectWith('Query\Effects\FilePutContents', '')
+            ->replaceEffectWith('Query\Effects\RunPandoc', 'Some article')
             ->runAll();
         $this->assertEquals('Some article', $result);
     }
