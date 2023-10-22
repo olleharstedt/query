@@ -16,6 +16,7 @@ use function Query\p;
 use Query\Effects\FileGetContents;
 use Query\Effects\FilePutContents;
 use Query\Effects\RunPandoc;
+use Query\Effects\CacheResult;
 
 class Base implements SiteInterface
 {
@@ -81,6 +82,7 @@ class Base implements SiteInterface
         return p(
             $this->getLink(...),
             new FileGetContents(),
+            new CacheResult('Base::show' . $href),
             $this->contentToArticles(...),
             $this->pickFirst(...),
             Pipe::abortIfEmpty(...),

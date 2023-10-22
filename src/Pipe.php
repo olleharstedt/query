@@ -6,11 +6,14 @@ use RuntimeException;
 use Query\Effects\Effect;
 use Query\Effects\Write;
 use Query\Effects\Read;
+use Query\Effects\CacheWrite;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * TODO: Add support for filter? Filter at start or filter each step?
  * TODO: Cache
  * TODO: Fork
+ * TODO: Use PSR logger interface
  */
 class Pipe
 {
@@ -27,35 +30,37 @@ class Pipe
     /** @var ?LoggerInterface */
     private $logger;
 
-    /** @psalm-mutation-free */
+    /** @var ?CacheInterface */
+    private $cache;
+
     public function __construct(array $args)
     {
         //error_log("Constructing pipe with " . json_encode($args));
         $this->callables = $args;
     }
 
-    /** @psalm-mutation-free */
     public function with(mixed $start): static
     {
-        $clone = clone $this;
-        $clone->start = $start;
-        return $clone;
+        $this->start = $start;
+        return $this;
     }
 
-    /** @psalm-mutation-free */
     public function setLogger(LoggerInterface $logger): static
     {
-        $clone = clone $this;
-        $clone->logger= $logger;
-        return $clone;
+        $this->logger= $logger;
+        return $this;
     }
 
-    /** @psalm-mutation-free */
+    public function setCache(CacheInterface $c): static
+    {
+        $this->cache = $c;
+        return $this;
+    }
+
     public function replaceEffectWith(string $effectName, mixed $result): static
     {
-        $c = clone $this;
-        $c->replaceEffectWith[$effectName] = $result;
-        return $c;
+        $this->replaceEffectWith[$effectName] = $result;
+        return $this;
     }
 
     public function replaceWriteWith(mixed $result): static
@@ -83,34 +88,54 @@ class Pipe
                         . json_encode($arg)
                     );
             }
-            //var_dump($callable instanceof Effect);
-            //var_dump($callable::class);
-
-            if ($callable instanceof Effect
-                && array_key_exists($callable::class, $this->replaceEffectWith)) {
-                $arg = $this->replaceEffectWith[$callable::class];
-            } elseif ($callable instanceof Read
-                      && count($this->replaceReadWith) > 0) {
-                $arg = array_shift($this->replaceReadWith);
-            } elseif ($callable instanceof Write
-                      && count($this->replaceWriteWith) > 0) {
-                $arg = array_shift($this->replaceWriteWith);
-            } else {
-                try {
+            try {
+                if ($callable instanceof Effect
+                    && array_key_exists($callable::class, $this->replaceEffectWith)) {
+                    $arg = $this->replaceEffectWith[$callable::class];
+                } elseif ($callable instanceof CacheWrite) {
+                    if (empty($this->cache)) {
+                        throw new RuntimeException("Cache not set");
+                    }
+                    $callable->setCache($this->cache);
                     $arg = call_user_func($callable, $arg);
-                } catch (ReturnEarlyException $ex) {
-                    return $ex->payload;
+                } elseif ($callable instanceof Read
+                    && count($this->replaceReadWith) > 0) {
+                    $arg = array_shift($this->replaceReadWith);
+                } elseif ($callable instanceof Write
+                    && count($this->replaceWriteWith) > 0) {
+                    $arg = array_shift($this->replaceWriteWith);
+                } else if ($callable instanceof Read && $this->cache !== null) {
+                    if (!is_string($arg)) {
+                        throw new RuntimeException("Cannot cache with non-string key");
+                    }
+                    error_log("Using cache for key " . $arg);
+                    $cachedArg = $this->cache->get(hash('md5', $arg));
+                    if ($cachedArg === null) {
+                        $arg = call_user_func($callable, $arg);
+                    } else {
+                        $arg = $cachedArg;
+                    }
+                } else {
+                    $arg = call_user_func($callable, $arg);
                 }
+            } catch (ReturnEarlyException $ex) {
+                return $ex->payload;
             }
         }
         return $arg;
     }
 
+    /**
+     * Run pipes recurisvely.
+     * Also propagating cache, logger from top pipe.
+     */
     public function runAll(): mixed
     {
         $arg = $this->run();
         if ($arg instanceof Pipe) {
             $arg->replaceEffectWith = array_merge($this->replaceEffectWith, $arg->replaceEffectWith);
+            $arg->cache = $this->cache;
+            $arg->logger = $this->logger;
             return $arg->runAll();
         } else {
             return $arg;
@@ -126,7 +151,6 @@ class Pipe
         }
     }
 
-    /** @psalm-mutation-free */
     protected function callableToString(mixed $callable): string
     {
         if (is_array($callable)) {

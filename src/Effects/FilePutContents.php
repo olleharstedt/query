@@ -2,6 +2,8 @@
 
 namespace Query\Effects;
 
+use InvalidArgumentException;
+
 class FilePutContents implements Write
 {
     private string $file;
@@ -10,8 +12,11 @@ class FilePutContents implements Write
         $this->file = $file;
     }
 
-    public function __invoke(string $content): int|false
+    public function __invoke(mixed $content): int|false
     {
+        if (!is_string($content)) {
+            throw new InvalidArgumentException("Expected string");
+        }
         return file_put_contents($this->file, $content);
     }
 }

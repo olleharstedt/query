@@ -6,16 +6,27 @@ use DOMNode;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
+use Query\Sites\SiteInterface;
+use Query\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class ParseHtml
 {
     private Factory $factory;
+    private CacheInterface $cache;
+    private LoggerInterface $logger;
     private array $options;
     private int $k = 0;
 
-    public function __construct(Factory $factory, array $options)
-    {
+    public function __construct(
+        Factory $factory,
+        CacheInterface $c,
+        LoggerInterface $l,
+        array $options
+    ) {
         $this->factory = $factory;
+        $this->cache   = $c;
+        $this->logger   = $l;
         $this->options = $options;
     }
 
@@ -35,7 +46,7 @@ class ParseHtml
             }
             $buffer .= $this->processAnchor($a);
         }
-        return substr($buffer, 0, (int) ($this->options['c'] ?? 2000)) . PHP_EOL;
+        return substr($buffer, 0, (int) ($this->options['c'] ?? 3000)) . PHP_EOL;
     }
 
     public function processAnchor(DOMElement $a): ?string
@@ -48,14 +59,16 @@ class ParseHtml
                 //error_log("return 1 " . $href);
                 return '';
             }
+            /** @var SiteInterface */
             $t = $this->factory
                 ->make()
                 ->with($href)
-                ->setLogger(new ErrorLogLogger())
+                ->setLogger($this->logger)
+                ->setCache($this->cache)
                 ->run();
             $this->k++;
             //error_log(get_class($t));
-            $showPipe = $t->show();
+            $showPipe = $t->show($href);
             //error_log(get_class($showPipe));
             return $showPipe->runAll();
         } else {

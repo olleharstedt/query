@@ -5,7 +5,9 @@
 use Query\Factory;
 use Query\ErrorLogLogger;
 use Query\ParseHtml;
-use Query\GetGoogleFromQuery;
+use Query\Effects\GetGoogleFromQuery;
+use Query\Effects\CacheResult;
+use function Query\p;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
@@ -27,18 +29,33 @@ for ($i = 1; $i < count($argv); $i++) {
 //echo $query . PHP_EOL;
 $query = urlencode($query);
 
-$opt = getopt("n::c::");
+// TODO: Replace with DTO
+$options = getopt("n::c::");
 printf("query = %s\n", $query);
+
+$cache = new \Yiisoft\Cache\File\FileCache('/tmp/querycache');
 
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
-//parseHtml(Query\getGoogleFromQuery($query), $opt);
-$parser = new ParseHtml(new Factory(), $opt);
-$content = (new GetGoogleFromQuery)($query);
-$buffer = $parser->parse($content);
-echo $buffer;
+//parseHtml(Query\getGoogleFromQuery($query), $options);
+$parser = new ParseHtml(
+    new Factory(),
+    $cache,
+    new ErrorLogLogger(),
+    $options
+);
+
+echo p(
+    new GetGoogleFromQuery(),
+    new CacheResult($query),
+    $parser->parse(...)
+)
+    ->with($query)
+    ->setCache($cache)
+    ->runAll();
 
 // $json coming from google api
+/*
 function parseJson(array $json)
 {
     echo "Parse json\n";
@@ -66,6 +83,7 @@ function parseJson(array $json)
         }
     }
 }
+*/
 
 /**
  * NOTES
