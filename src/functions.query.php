@@ -35,6 +35,7 @@ function ends_with(string $haystack, string $needle): bool {
     return substr($haystack, -$length) === $needle;
 }
 
+/* TODO: Rewrite as pipe
 function getJsonFromApi(string $query, array $config): array
 {
     $useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13';
@@ -59,6 +60,7 @@ function getJsonFromApi(string $query, array $config): array
         throw new Exception($error);
     }
 }
+ */
 
 /**
  * @psalm-mutation-free

@@ -5,13 +5,18 @@ namespace Query;
 use RuntimeException;
 
 /**
- * TODO: Add support for filter?
- * TODO: Filter at start or filter each step?
+ * TODO: Add support for filter? Filter at start or filter each step?
+ * TODO: Cache
+ * TODO: Fork
  */
 class Pipe
 {
+    /** @var Callable[] List of processes in the pipe */
     private array $callables;
+
+    /** @var mixed Start value for the first callable in the pipe */
     private mixed $start;
+
     private array $replaceEffectWith = [];
     private array $replaceReadWith   = [];
     private array $replaceWriteWith  = [];
