@@ -7,6 +7,7 @@ use Query\Effects\Effect;
 use Query\Effects\Write;
 use Query\Effects\Read;
 use Query\Effects\CacheWrite;
+use Query\Effects\Cache;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -92,6 +93,11 @@ class Pipe
                 if ($callable instanceof Effect
                     && array_key_exists($callable::class, $this->replaceEffectWith)) {
                     $arg = $this->replaceEffectWith[$callable::class];
+                } elseif ($callable instanceof Cache) {
+                    if (empty($this->cache)) {
+                        throw new RuntimeException("Cache not set");
+                    }
+                    $arg = $callable($this->cache, $arg);
                 } elseif ($callable instanceof CacheWrite) {
                     if (empty($this->cache)) {
                         throw new RuntimeException("Cache not set");

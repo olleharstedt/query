@@ -11,6 +11,7 @@
         <directory name="src" />
         <directory name="tests" />
         <file name="query.php" />
+        <file name="testcache.php" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
