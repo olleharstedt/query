@@ -18,7 +18,7 @@ class Cache
         if (!is_string($arg)) {
             throw new InvalidArgumentException("Cache key must be a string");
         }
-        $key = hash('md5', $arg);
+        $key = hash('fnv1a32', $arg);
         $cachedResult = $cache->get($key);
         if ($cachedResult !== null) {
             return $cachedResult;
