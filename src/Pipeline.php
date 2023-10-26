@@ -24,6 +24,7 @@ class Pipeline
     /** @var mixed Start value for the first callable in the pipe */
     private mixed $start;
 
+    /** @var array Class or interface to mixed result to be returned */
     private array $replaceEffectWith = [];
 
     /** @var ?LoggerInterface */
@@ -33,7 +34,7 @@ class Pipeline
     private $cache;
 
     /** @var bool If set to true, will not throw exception if a Cache effect happens without a set $cache property */
-    private $ignoreCache = false;
+    //private $ignoreCache = false;
 
     public function __construct(array $args)
     {

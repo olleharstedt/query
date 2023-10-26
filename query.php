@@ -44,10 +44,10 @@ $cache = new \Yiisoft\Cache\File\FileCache('/tmp/querycache');
 //parseJson(getJsonFromApi($query, $config));
 //parseHtml(Query\getGoogleFromQuery($query), $options);
 
-$logger = new ErrorLogLogger();
+$logger  = new ErrorLogLogger();
 $factory = new Factory();
-$parser = new ParseHtml($factory, $cache, $logger, $options);
-$result = pipe(
+$parser  = new ParseHtml($factory, $cache, $logger, $options);
+$result  = pipe(
     new Cache(new GetGoogleFromQuery()),
     $parser->parse(...)
 )
