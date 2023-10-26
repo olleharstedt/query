@@ -5,7 +5,7 @@ namespace Query\Effects;
 use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 
-class Cache
+class Cache implements Effect
 {
     private $callable;
 
@@ -15,6 +15,7 @@ class Cache
     }
     public function __invoke(CacheInterface $cache, mixed $arg): mixed
     {
+        error_log('invoking cache');
         if (!is_string($arg)) {
             throw new InvalidArgumentException("Cache key must be a string");
         }

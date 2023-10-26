@@ -88,8 +88,8 @@ class BaseTest extends TestCase
         $d = new DOMElement('article');
         $b = new Base();
         $s = $b->articleToString($d)
-           ->replaceEffectWith('Query\Effects\FilePutContents', '')
-           ->replaceEffectWith('Query\Effects\RunPandoc', 'some content')
+           ->replaceEffect('Query\Effects\FilePutContents', '')
+           ->replaceEffect('Query\Effects\RunPandoc', 'some content')
            ->run();
         $this->assertEquals('some content', $s);
     }
@@ -100,8 +100,8 @@ class BaseTest extends TestCase
         $d = new DOMElement('article');
         $b = new Base();
         $s = $b->articleToString($d)
-           ->replaceEffectWith('Query\Effects\FilePutContents', '')
-           ->replaceEffectWith('Query\Effects\RunPandoc', '')
+           ->replaceEffect('Query\Effects\FilePutContents', '')
+           ->replaceEffect('Query\Effects\RunPandoc', '')
            ->run();
         $this->assertEquals('', $s);
     }
@@ -126,7 +126,7 @@ class BaseTest extends TestCase
         $b = new Base();
         $result = $b
             ->show($href)
-            ->replaceReadWith('bla bla bla')
+            ->replaceEffect('Query\Effects\Cache', 'bla bla bla')
             ->runAll();
         $this->assertNull($result);
     }
@@ -147,9 +147,9 @@ class BaseTest extends TestCase
         $b = new Base();
         $result = $b
             ->show($href)
-            ->replaceEffectWith('Query\Effects\FileGetContents', $content)
-            ->replaceEffectWith('Query\Effects\FilePutContents', '')
-            ->replaceEffectWith('Query\Effects\RunPandoc', 'Some article')
+            ->replaceEffect('Query\Effects\Cache', $content)  // First file_get_contents
+            ->replaceEffect('Query\Effects\FilePutContents', '')
+            ->replaceEffect('Query\Effects\RunPandoc', 'Some article')
             ->runAll();
         $this->assertEquals('Some article', $result);
     }
@@ -184,7 +184,7 @@ class BaseTest extends TestCase
 
         $result = $b
             ->getDom($href)
-            ->replaceReadWith($content)
+            ->replaceEffect('Query\Effects\Read', $content)
             ->runAll();
 
         $d = new DOMDocument();
@@ -205,7 +205,7 @@ class BaseTest extends TestCase
         $b = new Base();
         $result = $b
             ->getDom($href)
-            ->replaceReadWith(null)
+            ->replaceEffect('Query\Effects\Read', null)
             ->runAll();
         $this->assertEquals('', $result);
     }

@@ -25,14 +25,15 @@ class Pipeline
     private mixed $start;
 
     private array $replaceEffectWith = [];
-    private array $replaceReadWith   = [];
-    private array $replaceWriteWith  = [];
 
     /** @var ?LoggerInterface */
     private $logger;
 
     /** @var ?CacheInterface */
     private $cache;
+
+    /** @var bool If set to true, will not throw exception if a Cache effect happens without a set $cache property */
+    private $ignoreCache = false;
 
     public function __construct(array $args)
     {
@@ -58,71 +59,44 @@ class Pipeline
         return $this;
     }
 
-    public function replaceEffectWith(string $effectName, mixed $result): static
+    public function replaceEffect(string $effectName, mixed $result): static
     {
         $this->replaceEffectWith[$effectName] = $result;
-        return $this;
-    }
-
-    public function replaceWriteWith(mixed $result): static
-    {
-        $this->replaceWriteWith[] = $result;
-        return $this;
-    }
-
-    public function replaceReadWith(mixed $result): static
-    {
-        $this->replaceReadWith[] = $result;
         return $this;
     }
 
     public function run(): mixed
     {
         $arg = $this->start ?? null;
-        //error_log("Running pipe with " . json_encode($arg));
         foreach ($this->callables as $callable) {
-            if ($this->logger) {
-                $this
-                    ->logger
-                    ->debug(
-                        $this->callableToString($callable) . ' - '
-                        . substr(json_encode($arg), 0, 200)
-                    );
-            }
+            $this->doLogging($callable, $arg);
+
             try {
-                if ($callable instanceof Effect
-                    && array_key_exists($callable::class, $this->replaceEffectWith)) {
+                /*
+                if (get_class($callable) === 'Closure') {
+                    $refl = new \ReflectionFunction($callable);
+                    error_log($refl->getName());
+                } else {
+                    error_log(get_class($callable));
+                }
+                 */
+                //error_log('implements: ' . (current(class_implements($callable)) ?? []));
+                //error_log(json_encode($this->replaceEffectWith));
+
+                if ($callable instanceof \Query\Effects\Effect
+                    && array_key_exists($callable::class, $this->replaceEffectWith)
+                ) {
                     $arg = $this->replaceEffectWith[$callable::class];
+                } elseif ($callable instanceof \Query\Effects\Effect
+                          // TODO: array filter instead of current
+                          && array_key_exists(current(class_implements($callable)), $this->replaceEffectWith)
+                ) {
+                    $arg = $this->replaceEffectWith[current(class_implements($callable))];
                 } elseif ($callable instanceof Cache) {
                     if (empty($this->cache)) {
                         throw new RuntimeException("Cache not set");
                     }
                     $arg = $callable($this->cache, $arg);
-                } elseif ($callable instanceof CacheWrite) {
-                    if (empty($this->cache)) {
-                        throw new RuntimeException("Cache not set");
-                    }
-                    $callable->setCache($this->cache);
-                    $arg = call_user_func($callable, $arg);
-                } elseif ($callable instanceof Read
-                    && count($this->replaceReadWith) > 0) {
-                    $arg = array_shift($this->replaceReadWith);
-                } elseif ($callable instanceof Write
-                    && count($this->replaceWriteWith) > 0) {
-                    $arg = array_shift($this->replaceWriteWith);
-                } else if ($callable instanceof Read && $this->cache !== null) {
-                    if (!is_string($arg)) {
-                        throw new RuntimeException("Cannot cache with non-string key");
-                    }
-                    error_log("Using cache for key " . $arg);
-                    // TODO: Cache key is wrong here
-                    $cachedArg = $this->cache->get(hash('md5', $arg));
-                    if ($cachedArg === null) {
-                        error_log("Found no cached content");
-                        $arg = call_user_func($callable, $arg);
-                    } else {
-                        $arg = $cachedArg;
-                    }
                 } else {
                     $arg = call_user_func($callable, $arg);
                 }
@@ -139,10 +113,10 @@ class Pipeline
      */
     public function runAll(): mixed
     {
-        error_log("runAll");
+        //error_log("runAll");
         $arg = $this->run();
         if ($arg instanceof Pipeline) {
-            error_log("Setting up child pipe");
+            //error_log("Setting up child pipe");
             $arg->replaceEffectWith = array_merge($this->replaceEffectWith, $arg->replaceEffectWith);
             $arg->cache  = $this->cache;
             $arg->logger = $this->logger;
@@ -169,6 +143,18 @@ class Pipeline
             return $callable::class;
         } else {
             throw new RuntimeException("Not implemented: " . get_class($callable));
+        }
+    }
+
+    protected function doLogging(callable $callable, mixed $arg): void
+    {
+        if ($this->logger) {
+            $this
+                ->logger
+                ->debug(
+                    $this->callableToString($callable) . ' - '
+                    . substr(json_encode($arg), 0, 200)
+                );
         }
     }
 }
