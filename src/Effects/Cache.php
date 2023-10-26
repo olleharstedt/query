@@ -15,7 +15,7 @@ class Cache implements Effect
     }
     public function __invoke(CacheInterface $cache, mixed $arg): mixed
     {
-        error_log('invoking cache');
+        //error_log('invoking cache');
         if (!is_string($arg)) {
             throw new InvalidArgumentException("Cache key must be a string");
         }

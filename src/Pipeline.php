@@ -139,6 +139,9 @@ class Pipeline
     {
         if (is_array($callable)) {
             return get_class($callable[0]) . '::' . $callable[1];
+        } elseif (get_class($callable) === 'Closure') {
+            $refl = new \ReflectionFunction($callable);
+            return $refl->getName();
         } elseif (is_callable($callable)) {
             return $callable::class;
         } else {
