@@ -96,6 +96,9 @@ class Pipeline
                     if (empty($this->cache)) {
                         throw new RuntimeException("Cache not set");
                     }
+                    if ($this->logger) {
+                        $this->logger->debug("[Cache called]");
+                    }
                     $arg = $callable($this->cache, $arg);
                 } else {
                     $arg = call_user_func($callable, $arg);

@@ -35,23 +35,28 @@ printf("query = %s\n", $query);
 
 $cache = new \Yiisoft\Cache\File\FileCache('/tmp/querycache');
 
+// TODO: Add DI
+// TODO: Rename with() to from()
+// TODO: Add foreach()
+// TODO: Add fork()
+
 //https://www.googleapis.com/customsearch/v1?[parameters]
 //parseJson(getJsonFromApi($query, $config));
 //parseHtml(Query\getGoogleFromQuery($query), $options);
-$parser = new ParseHtml(
-    new Factory(),
-    $cache,
-    new ErrorLogLogger(),
-    $options
-);
 
-echo pipe(
+$logger = new ErrorLogLogger();
+$factory = new Factory();
+$parser = new ParseHtml($factory, $cache, $logger, $options);
+$result = pipe(
     new Cache(new GetGoogleFromQuery()),
     $parser->parse(...)
 )
     ->with($query)
     ->setCache($cache)
+    ->setLogger($logger)
     ->runAll();
+
+echo $result;
 
 // $json coming from google api
 /*
