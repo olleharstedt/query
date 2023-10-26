@@ -3,7 +3,7 @@
 namespace Query;
 
 use InvalidArgumentException;
-use Query\Pipe;
+use Query\Pipeline;
 use function Query\p;
 use Query\Effects\FileGetContents;
 use Query\Effects\FilePutContents;
@@ -84,9 +84,9 @@ final class Factory
     /**
      * @psalm-mutation-free
      */
-    public function make(): Pipe
+    public function make(): Pipeline
     {
-        return p(
+        return pipe(
             $this->abortAtPdf(...),
             $this->getKey(...),
             $this->makeThing(...)

@@ -5,14 +5,14 @@ namespace Query\Sites;
 use DOMDocument;
 use League\HTMLToMarkdown\HtmlConverter;
 use RuntimeException;
-use Query\Pipe;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 
 class Wikipedia extends Base
 {
-    public function show(string $href): Pipe
+    public function show(string $href): Pipeline
     {
-        return p()->with("TODO");
+        return pipe()->with("TODO");
 
         $dom = $this->getDom();
         $body = $dom->getElementById("mw-content-text");

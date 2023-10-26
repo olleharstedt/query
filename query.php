@@ -7,7 +7,7 @@ use Query\ErrorLogLogger;
 use Query\ParseHtml;
 use Query\Effects\GetGoogleFromQuery;
 use Query\Effects\CacheResult;
-use function Query\p;
+use function Query\pipe;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
@@ -45,7 +45,7 @@ $parser = new ParseHtml(
     $options
 );
 
-echo p(
+echo pipe(
     new GetGoogleFromQuery(),
     new CacheResult($query),
     $parser->parse(...)

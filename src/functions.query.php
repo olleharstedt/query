@@ -65,8 +65,8 @@ function getJsonFromApi(string $query, array $config): array
 /**
  * @psalm-mutation-free
  */
-function p(): Pipe
+function pipe(): Pipeline
 {
     $args = func_get_args();
-    return new Pipe($args);
+    return new Pipeline($args);
 }

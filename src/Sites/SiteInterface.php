@@ -2,10 +2,10 @@
 
 namespace Query\Sites;
 
-use Query\Pipe;
+use Query\Pipeline;
 use function Query\p;
 
 interface SiteInterface
 {
-    public function show(string $href): Pipe;
+    public function show(string $href): Pipeline;
 }

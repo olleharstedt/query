@@ -16,7 +16,7 @@ use Psr\SimpleCache\CacheInterface;
  * TODO: Fork
  * TODO: Use PSR logger interface
  */
-class Pipe
+class Pipeline
 {
     /** @var Callable[] List of processes in the pipe */
     private array $callables;
@@ -141,7 +141,7 @@ class Pipe
     {
         error_log("runAll");
         $arg = $this->run();
-        if ($arg instanceof Pipe) {
+        if ($arg instanceof Pipeline) {
             error_log("Setting up child pipe");
             $arg->replaceEffectWith = array_merge($this->replaceEffectWith, $arg->replaceEffectWith);
             $arg->cache  = $this->cache;

@@ -5,7 +5,8 @@ use Query\ErrorLogLogger;
 use Query\ParseHtml;
 use Query\Effects\FileGetContents;
 use Query\Effects\Cache;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/src/functions.query.php';
@@ -29,7 +30,7 @@ function firstLetters(string $s): string
 
 $cache = new \Yiisoft\Cache\File\FileCache('/tmp/testcache');
 
-echo p(
+echo pipe(
     getLink(...),
     new Cache(new FileGetContents()),
     firstLetters(...)

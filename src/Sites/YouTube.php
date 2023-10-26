@@ -2,14 +2,14 @@
 
 namespace Query\Sites;
 
-use Query\Pipe;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 
 class YouTube extends Base
 {
-    public function show(string $href): Pipe
+    public function show(string $href): Pipeline
     {
-        return p()->with("Can't show youtube");
+        return pipe()->with("Can't show youtube");
 
         //TODO
         return "Can't show youtube\n";

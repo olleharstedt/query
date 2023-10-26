@@ -4,14 +4,14 @@ namespace Query\Sites;
 
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
-use Query\Pipe;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 
 class Reddit extends Base
 {
-    public function show(string $href): Pipe
+    public function show(string $href): Pipeline
     {
-        return p()->with("TODO");
+        return pipe()->with("TODO");
 
         $dom = $this->getDom();
         $siteTable = $dom->getElementById("siteTable");

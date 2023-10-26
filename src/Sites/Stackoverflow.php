@@ -3,8 +3,8 @@
 namespace Query\Sites;
 
 use Symfony\Component\DomCrawler\Crawler;
-use Query\Pipe;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 use Query\Effects\FileGetContents;
 use Query\Effects\CacheResult;
 
@@ -24,9 +24,9 @@ class Stackoverflow extends Base
         return $buffer;
     }
 
-    public function show(string $href): Pipe
+    public function show(string $href): Pipeline
     {
-        return p(
+        return pipe(
             $this->getLink(...),
             new FileGetContents(),
             // TODO: FileGetContents doesn't know cache key :(

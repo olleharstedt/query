@@ -11,8 +11,8 @@ use RuntimeException;
 use InvalidArgumentException;
 use Traversable;
 use League\HTMLToMarkdown\HtmlConverter;
-use Query\Pipe;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 use Query\Effects\FileGetContents;
 use Query\Effects\FilePutContents;
 use Query\Effects\RunPandoc;
@@ -61,9 +61,9 @@ class Base implements SiteInterface
         return $tmpDom;
     }
 
-    public function articleToString(DOMElement $article): Pipe
+    public function articleToString(DOMElement $article): Pipeline
     {
-        return p(
+        return pipe(
             $this->articleToDom(...),
             $this->domToMarkdown(...),
             (new FilePutContents('/tmp/tmp.md')),
@@ -77,15 +77,15 @@ class Base implements SiteInterface
         return $converter->convert($dom->saveHTML());
     }
 
-    public function show(string $href): Pipe
+    public function show(string $href): Pipeline
     {
-        return p(
+        return pipe(
             $this->getLink(...),
             new FileGetContents(),
             new CacheResult('Base::show' . $href),
             $this->contentToArticles(...),
             $this->pickFirst(...),
-            Pipe::abortIfEmpty(...),
+            Pipeline::abortIfEmpty(...),
             $this->articleToString(...)
         )->with($href);
 
@@ -150,9 +150,9 @@ class Base implements SiteInterface
         return urldecode($parts[0]);
     }
 
-    public function getDom(string $href): Pipe
+    public function getDom(string $href): Pipeline
     {
-        return p(
+        return pipe(
             $this->getLink(...),
             new FileGetContents(),
             $this->contentToDom(...)
@@ -187,10 +187,10 @@ class Base implements SiteInterface
         return $dom->saveHTML();
     }
 
-    public function getTextFromNode(DOMNode $node): Pipe
+    public function getTextFromNode(DOMNode $node): Pipeline
     {
         $tmpFile = '/tmp/queryresult.html';
-        return p(
+        return pipe(
             $this->nodeToDOM(...),
             $this->DOMToHtml(...),
             new FilePutContents($tmpFile),

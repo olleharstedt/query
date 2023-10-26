@@ -13,7 +13,7 @@ require_once __DIR__.'/../src/functions.query.php';
  *
  * @covers Query\Base
  * @covers Query\FilePutContents
- * @covers Query\Pipe
+ * @covers Query\Pipeline
  * @covers Query\RunPandoc
  * @covers Query\p
  * @covers Query\ReturnEarlyException

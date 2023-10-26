@@ -2,15 +2,15 @@
 
 namespace Query\Sites;
 
-use Query\Pipe;
-use function Query\p;
+use Query\Pipeline;
+use function Query\pipe;
 
 class Silent extends Base
 {
-    public function show(string $href): Pipe
+    public function show(string $href): Pipeline
     {
         // Do nothing.
-        return p();
+        return pipe();
     }
 }
 
