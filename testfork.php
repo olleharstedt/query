@@ -3,7 +3,7 @@
 use Query\Factory;
 use Query\ErrorLogLogger;
 use Query\ParseHtml;
-use Query\Effects\GetGoogleFromQuery;
+use Query\Effects\FileGetContents;
 use Query\Effects\Cache;
 use function Query\pipe;
 
@@ -22,9 +22,22 @@ $urls = [
 
 $logger = new ErrorLogLogger();
 
-pipe(
-    fetchUrl(...),
+function htmlToMarkdown(string $html): string
+{
+    $converter = new HtmlConverter();
+    return $converter->convert($html);
+}
+
+function firstParagraph(string $text): string
+{
+    return substr($text, 0, 50);
+}
+
+$result = pipe(
+    new FileGetContents(),
     htmlToMarkdown(...),
     firstParagraph(...)
 )
-  ->setLogger($logger);
+  ->fork(2)
+  ->setLogger($logger)
+  ->map($urls);
