@@ -37,7 +37,7 @@ $cache = new \Yiisoft\Cache\File\FileCache('/tmp/querycache');
 
 // TODO: Add DI
 // TODO: Rename with() to from()
-// TODO: Add foreach()
+// TODO: Add foreach() or perhaps rather map, sum, fold
 // TODO: Add fork()
 
 //https://www.googleapis.com/customsearch/v1?[parameters]

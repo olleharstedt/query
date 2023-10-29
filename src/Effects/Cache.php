@@ -17,7 +17,7 @@ class Cache implements Effect
     {
         //error_log('invoking cache');
         if (!is_string($arg)) {
-            throw new InvalidArgumentException("Cache key must be a string");
+            throw new InvalidArgumentException("Cache key must be a string but got " . gettype($arg));
         }
         $key = hash('fnv1a32', $arg);
         $cachedResult = $cache->get($key);

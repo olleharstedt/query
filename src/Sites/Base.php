@@ -83,7 +83,6 @@ class Base implements SiteInterface
         return pipe(
             $this->getLink(...),
             new Cache(new FileGetContents()),
-            //new CacheResult('Base::show' . $href),
             $this->contentToArticles(...),
             $this->pickFirst(...),
             Pipeline::abortIfEmpty(...),
