@@ -74,7 +74,7 @@ function pipe(): Pipeline
 /**
  * @see https://zerowp.com/split-php-array-in-x-equal-number-of-elements/
  */
-function splitArray(array $input_array, int $size, bool $preserve_keys = false): array
+function split_array(array $input_array, int $size, bool $preserve_keys = false): array
 {
     $nr = (int) ceil(count($input_array) / $size);
     if ($nr > 0) {
@@ -82,3 +82,24 @@ function splitArray(array $input_array, int $size, bool $preserve_keys = false):
     }
     return $input_array;
 }
+
+function pick_first(?iterable $things): mixed
+{
+    if (empty($things)) {
+        return null;
+    }
+    foreach ($things as $_) {
+        return $_;
+    }
+    return null;
+}
+
+function abort_at_empty(mixed $payload): mixed
+{
+    if (empty($payload)) {
+        throw new ReturnEarlyException(null);
+    } else {
+        return $payload;
+    }
+}
+

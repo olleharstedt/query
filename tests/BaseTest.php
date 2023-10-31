@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Query\Sites\Base;
+use function Query\pick_first;
 
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__.'/../src/functions.query.php';
@@ -11,11 +12,12 @@ require_once __DIR__.'/../src/functions.query.php';
  * XDEBUG_MODE=coverage php ./vendor/bin/phpunit --coverage-clover cov.xml
  * php tests/check_coverage.php cov.xml 80
  *
- * @covers Query\Base
- * @covers Query\FilePutContents
+ * @covers Query\Sites\Base
+ * @covers Query\Effects\FilePutContents
  * @covers Query\Pipeline
- * @covers Query\RunPandoc
- * @covers Query\p
+ * @covers Query\Effects\RunPandoc
+ * @covers Query\Effects\Cache
+ * @covers Query\pipe
  * @covers Query\ReturnEarlyException
  */
 class BaseTest extends TestCase
@@ -78,7 +80,7 @@ class BaseTest extends TestCase
     {
         $href = '/url?q=https://medium.com';
         $b = new Base();
-        $c = $b->pickFirst([1, 2, 3]);
+        $c = pick_first([1, 2, 3]);
         $this->assertEquals(1, $c);
     }
 
@@ -210,12 +212,10 @@ class BaseTest extends TestCase
         $this->assertEquals('', $result);
     }
 
-    /*
     public function testNodeToDOM(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
         $d = new DOMNode();
         $b = new Base();
     }
-    */
 }

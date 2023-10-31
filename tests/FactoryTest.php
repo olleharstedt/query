@@ -11,12 +11,12 @@ require_once __DIR__.'/../src/functions.query.php';
  * XDEBUG_MODE=coverage php ./vendor/bin/phpunit --coverage-clover cov.xml
  * php tests/check_coverage.php cov.xml 80
  *
- * @covers Query\Base
+ * @covers Query\Sites\Base
  * @covers Query\Factory
- * @covers Query\Pipe
+ * @covers Query\Pipeline
  * @covers Query\ends_with
  * @covers Query\get_domain
- * @covers Query\p
+ * @covers Query\pipe
  */
 class FactoryTest extends TestCase
 {

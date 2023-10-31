@@ -13,6 +13,8 @@ use Traversable;
 use League\HTMLToMarkdown\HtmlConverter;
 use Query\Pipeline;
 use function Query\pipe;
+use function Query\pick_first;
+use function Query\abort_at_empty;
 use Query\Effects\FileGetContents;
 use Query\Effects\FilePutContents;
 use Query\Effects\RunPandoc;
@@ -40,17 +42,6 @@ class Base implements SiteInterface
         $dom = new DOMDocument();
         @$dom->loadHTML($content);
         return $dom->getElementsByTagName("article");
-    }
-
-    public function pickFirst(?iterable $things): mixed
-    {
-        if (empty($things)) {
-            return null;
-        }
-        foreach ($things as $_) {
-            return $_;
-        }
-        return null;
     }
 
     public function articleToDom(DOMElement $article): DOMDocument
@@ -84,8 +75,8 @@ class Base implements SiteInterface
             $this->getLink(...),
             new Cache(new FileGetContents()),
             $this->contentToArticles(...),
-            $this->pickFirst(...),
-            Pipeline::abortIfEmpty(...),
+            pick_first(...),
+            abort_at_empty(...),
             $this->articleToString(...)
         )->from($href);
 

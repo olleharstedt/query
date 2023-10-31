@@ -8,6 +8,7 @@ use Query\Effects\Write;
 use Query\Effects\Read;
 use Query\Effects\CacheWrite;
 use Query\Effects\Cache;
+use function Query\split_array;
 use Psr\SimpleCache\CacheInterface;
 use Spatie\Fork\Fork;
 
@@ -192,22 +193,12 @@ class Pipeline
      */
     private function getFns(array $start): array
     {
-        $starts = splitArray($start, $this->fork);
+        $starts = split_array($start, $this->fork);
         $fns    = [];
         for ($i = 0; $i < $this->fork; $i++) {
             $fns[] = fn (): array => $this->mapMisc($starts[$i]);
         }
         return $fns;
-    }
-
-    // TODO: Move to function
-    public static function abortIfEmpty(mixed $payload): mixed
-    {
-        if (empty($payload)) {
-            throw new ReturnEarlyException(null);
-        } else {
-            return $payload;
-        }
     }
 
     /**

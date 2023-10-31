@@ -13,15 +13,10 @@ require_once __DIR__.'/../src/functions.query.php';
 class KeyTest extends TestCase
 {
     /**
-     * @covers Query\Factory::make()
-     * @covers Query\Factory::abortAtPdf()
-     * @covers Query\Factory::getKey()
-     * @covers Query\Factory::makeThing()
-     * @covers Query\Pipe::__construct()
-     * @covers Query\Pipe::run()
-     * @covers Query\Pipe::from()
+     * @covers Query\Factory
+     * @covers Query\Pipeline
      * @covers Query\ends_with
-     * @covers Query\p
+     * @covers Query\pipe
      * @covers Query\get_domain
      */
     public function testKey(): void
