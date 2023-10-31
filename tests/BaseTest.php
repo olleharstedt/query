@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Query\Sites\Base;
+use Query\Pipeline;
 use function Query\pick_first;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -17,11 +18,22 @@ require_once __DIR__.'/../src/functions.query.php';
  * @covers Query\Pipeline
  * @covers Query\Effects\RunPandoc
  * @covers Query\Effects\Cache
- * @covers Query\pipe
  * @covers Query\ReturnEarlyException
+ * @covers Query\pipe
+ * @covers Query\abort_at_empty
+ * @covers Query\pick_first
  */
 class BaseTest extends TestCase
 {
+    public function testContentToArticlesEmpty(): void
+    {
+        $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
+        $b = new Base();
+        $content = "";
+        $c = $b->contentToArticles($content) ?? [];
+        $this->assertCount(0, $c);
+    }
+
     public function testContentToArticles(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
@@ -212,10 +224,32 @@ class BaseTest extends TestCase
         $this->assertEquals('', $result);
     }
 
-    public function testNodeToDOM(): void
+    public function testNodeToDom(): void
     {
         $href = '/url?q=https://medium.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q';
-        $d = new DOMNode();
+        $d = new DOMText("Some text");
         $b = new Base();
+        $dom = $b->nodeToDOM($d);
+        $this->assertInstanceOf(DOMDocument::class, $dom);
+    }
+
+    public function testDomToHtml(): void
+    {
+        $d = new DOMDocument();
+        $p = $d->createElement("p");
+        $p->textContent = "Moo";
+        $d->appendChild($p);
+        $b = new Base();
+        $html = $b->DOMToHtml($d);
+        $this->assertEquals("<p>Moo</p>\n", $html);
+    }
+
+    public function testGetTextFromNode(): void
+    {
+        $d = new DOMText("Some text");
+        $b = new Base();
+        $result = $b->getTextFromNode($d);
+        // TODO: Trivially 100% tested code.
+        $this->assertInstanceOf(Pipeline::class, $result);
     }
 }

@@ -180,6 +180,7 @@ class Base implements SiteInterface
 
     public function getTextFromNode(DOMNode $node): Pipeline
     {
+        // TODO: Should be configurable.
         $tmpFile = '/tmp/queryresult.html';
         return pipe(
             $this->nodeToDOM(...),
