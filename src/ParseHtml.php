@@ -62,7 +62,7 @@ class ParseHtml
             /** @var SiteInterface */
             $t = $this->factory
                 ->make()
-                ->with($href)
+                ->from($href)
                 ->setLogger($this->logger)
                 ->setCache($this->cache)
                 ->run();

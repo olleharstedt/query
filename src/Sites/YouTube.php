@@ -9,7 +9,7 @@ class YouTube extends Base
 {
     public function show(string $href): Pipeline
     {
-        return pipe()->with("Can't show youtube");
+        return pipe()->from("Can't show youtube");
 
         //TODO
         return "Can't show youtube\n";

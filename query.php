@@ -51,7 +51,7 @@ $result  = pipe(
     new Cache(new GetGoogleFromQuery()),
     $parser->parse(...)
 )
-    ->with($query)
+    ->from($query)
     ->setCache($cache)
     ->setLogger($logger)
     ->runAll();

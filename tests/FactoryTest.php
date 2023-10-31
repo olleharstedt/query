@@ -85,7 +85,7 @@ class FactoryTest extends TestCase
         $f = new Factory();
         $p = $f->make();
         $res = $p
-            ->with("/url?q=https://www.getsafeonline.org/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
+            ->from("/url?q=https://www.getsafeonline.org/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
             ->run();
         $this->assertEquals($res::class, 'Query\Sites\Unknown');
     }
@@ -95,7 +95,7 @@ class FactoryTest extends TestCase
         $f = new Factory();
         $p = $f->make();
         $res = $p
-            ->with("/url?q=https://stackoverflow.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
+            ->from("/url?q=https://stackoverflow.com/checkawebsite/&sa=U&ved=2ahUKEwjy_7PY1oKCAxWCQvEDHVBqA1YQFnoECAIQAg&usg=AOvVaw2AKolUT0FelA3t0w9iZD-Q")
             ->run();
         $this->assertEquals($res::class, 'Query\Sites\Stackoverflow');
     }

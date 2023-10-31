@@ -32,7 +32,7 @@ class Stackoverflow extends Base
             // TODO: FileGetContents doesn't know cache key :(
             new CacheResult('Stackoverflow::show' . $href),
             $this->processContent(...)
-        )->with($href);
+        )->from($href);
 
         $buffer = "";
         $link = $this->getLink();

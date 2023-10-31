@@ -12,7 +12,7 @@ class Wikipedia extends Base
 {
     public function show(string $href): Pipeline
     {
-        return pipe()->with("TODO");
+        return pipe()->from("TODO");
 
         $dom = $this->getDom();
         $body = $dom->getElementById("mw-content-text");

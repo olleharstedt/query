@@ -69,7 +69,7 @@ class Base implements SiteInterface
             $this->domToMarkdown(...),
             (new FilePutContents('/tmp/tmp.md')),
             (new RunPandoc())->from('markdown')->to('plain')->inputFile('/tmp/tmp.md')
-        )->with($article);
+        )->from($article);
     }
 
     public function domToMarkdown(DOMDocument $dom): string
@@ -87,7 +87,7 @@ class Base implements SiteInterface
             $this->pickFirst(...),
             Pipeline::abortIfEmpty(...),
             $this->articleToString(...)
-        )->with($href);
+        )->from($href);
 
         /*
         $buffer = "";
@@ -156,7 +156,7 @@ class Base implements SiteInterface
             $this->getLink(...),
             new FileGetContents(),
             $this->contentToDom(...)
-        )->with($href);
+        )->from($href);
     }
 
     /*

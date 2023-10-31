@@ -48,7 +48,7 @@ class Pipeline
     /**
      * Set pipeline start value.
      */
-    public function with(mixed $start): static
+    public function from(mixed $start): static
     {
         $this->start = $start;
         return $this;

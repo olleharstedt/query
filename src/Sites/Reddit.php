@@ -11,7 +11,7 @@ class Reddit extends Base
 {
     public function show(string $href): Pipeline
     {
-        return pipe()->with("TODO");
+        return pipe()->from("TODO");
 
         $dom = $this->getDom();
         $siteTable = $dom->getElementById("siteTable");

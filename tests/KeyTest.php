@@ -19,7 +19,7 @@ class KeyTest extends TestCase
      * @covers Query\Factory::makeThing()
      * @covers Query\Pipe::__construct()
      * @covers Query\Pipe::run()
-     * @covers Query\Pipe::with()
+     * @covers Query\Pipe::from()
      * @covers Query\ends_with
      * @covers Query\p
      * @covers Query\get_domain
@@ -30,7 +30,7 @@ class KeyTest extends TestCase
         $url = "/url?q=https://stackoverflow.com/rotmos&sa=U&ved=2ahUKEwi04--39PCBAxWhcfEDHdukDCoQFnoECAEQBA&usg=AOvVaw1-CR3wteujT38AIxfp5IFq";
         $res = $f
             ->make()
-            ->with($url)
+            ->from($url)
             ->run();
         $this->assertEquals(get_class($res), "Query\Sites\Stackoverflow");
     }
