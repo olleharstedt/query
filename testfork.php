@@ -4,6 +4,7 @@ use Query\Factory;
 use Query\ErrorLogLogger;
 use Query\ParseHtml;
 use Query\Effects\FileGetContents;
+use League\HTMLToMarkdown\HtmlConverter;
 use Query\Effects\Cache;
 use function Query\pipe;
 
@@ -17,27 +18,33 @@ ini_set("display_errors", true);
 
 $urls = [
     "https://google.com",
-    "https://bing.com"
+    "https://bing.com",
+    "https://duckduckgo.com",
+    "https://search.yahoo.com"
 ];
 
 $logger = new ErrorLogLogger();
+$cache = new \Yiisoft\Cache\File\FileCache('/tmp/testfork');
 
 function htmlToMarkdown(string $html): string
 {
-    $converter = new HtmlConverter();
+    $converter = new HtmlConverter(['strip_tags' => true]);
     return $converter->convert($html);
 }
 
-function firstParagraph(string $text): string
+function firstText(string $text): string
 {
     return substr($text, 0, 50);
 }
 
 $result = pipe(
-    new FileGetContents(),
+    new Cache(new FileGetContents()),
     htmlToMarkdown(...),
-    firstParagraph(...)
+    firstText(...)
 )
-  ->fork(2)
-  ->setLogger($logger)
-  ->map($urls);
+    ->fork(2)
+    ->setCache($cache)
+    ->setLogger($logger)
+    ->map($urls);
+
+var_dump($result);

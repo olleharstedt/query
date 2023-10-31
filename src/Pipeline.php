@@ -9,11 +9,11 @@ use Query\Effects\Read;
 use Query\Effects\CacheWrite;
 use Query\Effects\Cache;
 use Psr\SimpleCache\CacheInterface;
+use Spatie\Fork\Fork;
 
 /**
  * TODO: Add support for filter? Filter at start or filter each step?
  * TODO: Cache
- * TODO: Fork
  * TODO: Use PSR logger interface
  */
 class Pipeline
@@ -33,7 +33,10 @@ class Pipeline
     /** @var ?CacheInterface */
     private $cache;
 
-    /** @var bool If set to true, will not throw exception if a Cache effect happens without a set $cache property */
+    /** @var int Number of processes to use */
+    private $fork = 1;
+
+    /** // @var bool If set to true, will not throw exception if a Cache effect happens without a set $cache property */
     //private $ignoreCache = false;
 
     public function __construct(array $args)
@@ -42,6 +45,9 @@ class Pipeline
         $this->callables = $args;
     }
 
+    /**
+     * Set pipeline start value.
+     */
     public function with(mixed $start): static
     {
         $this->start = $start;
@@ -63,6 +69,12 @@ class Pipeline
     public function replaceEffect(string $effectName, mixed $result): static
     {
         $this->replaceEffectWith[$effectName] = $result;
+        return $this;
+    }
+
+    public function fork(int $nr): static
+    {
+        $this->fork = $nr;
         return $this;
     }
 
@@ -130,6 +142,64 @@ class Pipeline
         }
     }
 
+    /**
+     * Map on pipeline for all values in start array.
+     *
+     * @param array<mixed> $start
+     * @return array<mixed>
+     */
+    public function map(array $start): array
+    {
+        if (empty($start)) {
+            throw new RuntimeException("No start value");
+        }
+
+        if ($this->fork > 1) {
+            if (!function_exists('pcntl_fork')) {
+                throw new RuntimeException('PCNTL functions not available on this PHP installation');
+            }
+            $fns = $this->getFns($start);
+            $results = Fork::new()
+                ->before(
+                    //child: fn() => error_log('child'),
+                    //parent: fn() => error_log('parent')
+                )
+                ->run(...$fns);
+            // @see https://stackoverflow.com/questions/27304024/merge-all-sub-arrays-into-one
+            /** @psalm-suppress NamedArgumentNotAllowed */
+            return array_merge(...$results);
+        } else {
+            return $this->mapMisc($start);
+        }
+    }
+
+    private function mapMisc(array $start): array
+    {
+        $result = [];
+        foreach ($start as $val) {
+            $this->start = $val;
+            $result[] = $this->runAll();
+        }
+        return $result;
+    }
+
+    /**
+     * Used by fork
+     *
+     * @param array<mixed> $start
+     * @return array<callable>
+     */
+    private function getFns(array $start): array
+    {
+        $starts = splitArray($start, $this->fork);
+        $fns    = [];
+        for ($i = 0; $i < $this->fork; $i++) {
+            $fns[] = fn (): array => $this->mapMisc($starts[$i]);
+        }
+        return $fns;
+    }
+
+    // TODO: Move to function
     public static function abortIfEmpty(mixed $payload): mixed
     {
         if (empty($payload)) {
@@ -139,6 +209,9 @@ class Pipeline
         }
     }
 
+    /**
+     * @psalm-suppress TypeDoesNotContainType
+     */
     protected function callableToString(mixed $callable): string
     {
         if (is_array($callable)) {

@@ -70,3 +70,15 @@ function pipe(): Pipeline
     $args = func_get_args();
     return new Pipeline($args);
 }
+
+/**
+ * @see https://zerowp.com/split-php-array-in-x-equal-number-of-elements/
+ */
+function splitArray(array $input_array, int $size, bool $preserve_keys = false): array
+{
+    $nr = (int) ceil(count($input_array) / $size);
+    if ($nr > 0) {
+        return array_chunk($input_array, $nr, $preserve_keys);
+    }
+    return $input_array;
+}
