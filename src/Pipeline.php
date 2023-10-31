@@ -145,13 +145,14 @@ class Pipeline
     /**
      * Map on pipeline for all values in start array.
      *
-     * @param array<mixed> $start
-     * @return array<mixed>
+     * @template T
+     * @param array<T> $start
+     * @return array<T>
      */
     public function map(array $start): array
     {
         if (empty($start)) {
-            throw new RuntimeException("No start value");
+            throw new RuntimeException("No start values");
         }
 
         if ($this->fork > 1) {
